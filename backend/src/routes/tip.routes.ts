@@ -18,4 +18,10 @@ router.get('/', (req, res) => tipController.getAllTips(req, res));
 // GET /api/tips/:id - Get a single tip by ID (public)
 router.get('/:id', (req, res) => tipController.getTipById(req, res));
 
+// PATCH /api/tips/:id - Update a tip (protected - owner only)
+router.patch('/:id', authenticate, (req, res) => tipController.updateTip(req, res));
+
+// DELETE /api/tips/:id - Delete a tip (protected - owner only)
+router.delete('/:id', authenticate, (req, res) => tipController.deleteTip(req, res));
+
 export default router;

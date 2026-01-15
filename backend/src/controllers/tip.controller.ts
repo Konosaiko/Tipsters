@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { tipService } from '../services/tip.service';
-import { CreateTipDto } from '../types/tip.types';
+import { CreateTipDto, UpdateTipDto } from '../types/tip.types';
 import { AuthRequest } from '../middleware/auth.middleware';
 
 /**
@@ -86,6 +86,86 @@ export class TipController {
       }
 
       console.error('Error fetching tip:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  /**
+   * PATCH /api/tips/:id
+   * Update a tip (authenticated, owner only)
+   */
+  async updateTip(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      if (!req.user) {
+        res.status(401).json({ error: 'Authentication required' });
+        return;
+      }
+
+      const { id } = req.params;
+      const dto: UpdateTipDto = req.body;
+
+      // Validate odds if provided
+      if (dto.odds !== undefined && dto.odds <= 0) {
+        res.status(400).json({ error: 'Odds must be greater than 0' });
+        return;
+      }
+
+      const tip = await tipService.updateTip(id, req.user.userId, dto);
+
+      res.status(200).json(tip);
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message.includes('not found')) {
+          res.status(404).json({ error: error.message });
+          return;
+        }
+
+        if (error.message.includes('only update your own')) {
+          res.status(403).json({ error: error.message });
+          return;
+        }
+
+        if (error.message.includes('must be')) {
+          res.status(400).json({ error: error.message });
+          return;
+        }
+      }
+
+      console.error('Error updating tip:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  /**
+   * DELETE /api/tips/:id
+   * Delete a tip (authenticated, owner only)
+   */
+  async deleteTip(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      if (!req.user) {
+        res.status(401).json({ error: 'Authentication required' });
+        return;
+      }
+
+      const { id } = req.params;
+
+      await tipService.deleteTip(id, req.user.userId);
+
+      res.status(204).send();
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message.includes('not found')) {
+          res.status(404).json({ error: error.message });
+          return;
+        }
+
+        if (error.message.includes('only delete your own')) {
+          res.status(403).json({ error: error.message });
+          return;
+        }
+      }
+
+      console.error('Error deleting tip:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }

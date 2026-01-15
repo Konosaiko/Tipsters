@@ -10,6 +10,16 @@ export interface CreateTipDto {
 }
 
 /**
+ * Request body for updating a tip
+ */
+export interface UpdateTipDto {
+  event?: string;
+  prediction?: string;
+  odds?: number;
+  explanation?: string;
+}
+
+/**
  * Response shape for a tip
  */
 export interface TipResponse {

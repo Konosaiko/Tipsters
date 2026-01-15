@@ -1,5 +1,5 @@
 import { db } from '../lib/db';
-import { CreateTipDto, TipResponse } from '../types/tip.types';
+import { CreateTipDto, UpdateTipDto, TipResponse } from '../types/tip.types';
 
 /**
  * Tip Service
@@ -77,6 +77,83 @@ export class TipService {
     }
 
     return tip;
+  }
+
+  /**
+   * Update a tip (authenticated, owner only)
+   *
+   * @param tipId - The tip ID
+   * @param userId - The authenticated user ID
+   * @param data - Update data
+   * @returns The updated tip
+   * @throws Error if tip not found or user is not the owner
+   */
+  async updateTip(tipId: string, userId: string, data: UpdateTipDto): Promise<TipResponse> {
+    // Find the tip with its tipster relation
+    const tip = await db.tip.findUnique({
+      where: { id: tipId },
+      include: {
+        tipster: true,
+      },
+    });
+
+    if (!tip) {
+      throw new Error(`Tip with id ${tipId} not found`);
+    }
+
+    // Check ownership: user must own the tipster who created this tip
+    if (tip.tipster.userId !== userId) {
+      throw new Error('You can only update your own tips');
+    }
+
+    // Validate odds if provided
+    if (data.odds !== undefined && data.odds <= 0) {
+      throw new Error('Odds must be greater than 0');
+    }
+
+    // Update the tip
+    const updatedTip = await db.tip.update({
+      where: { id: tipId },
+      data: {
+        event: data.event,
+        prediction: data.prediction,
+        odds: data.odds,
+        explanation: data.explanation,
+      },
+    });
+
+    return updatedTip;
+  }
+
+  /**
+   * Delete a tip (authenticated, owner only)
+   *
+   * @param tipId - The tip ID
+   * @param userId - The authenticated user ID
+   * @throws Error if tip not found or user is not the owner
+   */
+  async deleteTip(tipId: string, userId: string): Promise<void> {
+    // Find the tip with its tipster relation
+    const tip = await db.tip.findUnique({
+      where: { id: tipId },
+      include: {
+        tipster: true,
+      },
+    });
+
+    if (!tip) {
+      throw new Error(`Tip with id ${tipId} not found`);
+    }
+
+    // Check ownership: user must own the tipster who created this tip
+    if (tip.tipster.userId !== userId) {
+      throw new Error('You can only delete your own tips');
+    }
+
+    // Delete the tip
+    await db.tip.delete({
+      where: { id: tipId },
+    });
   }
 }
 
