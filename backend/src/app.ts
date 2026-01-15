@@ -1,9 +1,18 @@
 import express from 'express';
+import cors from 'cors';
 import authRoutes from './routes/auth.routes';
 import tipsterRoutes from './routes/tipster.routes';
 import tipRoutes from './routes/tip.routes';
 
 const app = express();
+
+// CORS configuration - allow frontend to make requests
+app.use(
+  cors({
+    origin: 'http://localhost:5173', // Frontend URL
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 
