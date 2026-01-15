@@ -9,20 +9,21 @@ import { CreateTipDto, TipResponse } from '../types/tip.types';
  */
 export class TipService {
   /**
-   * Create a new tip
+   * Create a new tip (authenticated tipsters only)
    *
-   * @param data - The tip data
+   * @param userId - The authenticated user ID
+   * @param data - The tip data (without tipsterId)
    * @returns The created tip
-   * @throws Error if tipster doesn't exist or validation fails
+   * @throws Error if user doesn't have a tipster profile or validation fails
    */
-  async createTip(data: CreateTipDto): Promise<TipResponse> {
-    // Validate that the tipster exists
+  async createTip(userId: string, data: Omit<CreateTipDto, 'tipsterId'>): Promise<TipResponse> {
+    // Find user's tipster profile
     const tipster = await db.tipster.findUnique({
-      where: { id: data.tipsterId },
+      where: { userId },
     });
 
     if (!tipster) {
-      throw new Error(`Tipster with id ${data.tipsterId} not found`);
+      throw new Error('You must create a tipster profile before publishing tips');
     }
 
     // Validate odds (must be positive)
@@ -33,7 +34,7 @@ export class TipService {
     // Create the tip
     const tip = await db.tip.create({
       data: {
-        tipsterId: data.tipsterId,
+        tipsterId: tipster.id,
         event: data.event,
         prediction: data.prediction,
         odds: data.odds,

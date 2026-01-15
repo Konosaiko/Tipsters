@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { tipService } from '../services/tip.service';
 import { CreateTipDto } from '../types/tip.types';
+import { AuthRequest } from '../middleware/auth.middleware';
 
 /**
  * Tip Controller
@@ -11,28 +12,33 @@ import { CreateTipDto } from '../types/tip.types';
 export class TipController {
   /**
    * POST /api/tips
-   * Create a new tip
+   * Create a new tip (authenticated tipsters only)
    */
-  async createTip(req: Request, res: Response): Promise<void> {
+  async createTip(req: AuthRequest, res: Response): Promise<void> {
     try {
-      const dto: CreateTipDto = req.body;
+      if (!req.user) {
+        res.status(401).json({ error: 'Authentication required' });
+        return;
+      }
+
+      const dto: Omit<CreateTipDto, 'tipsterId'> = req.body;
 
       // Basic validation
-      if (!dto.tipsterId || !dto.event || !dto.prediction || dto.odds === undefined) {
+      if (!dto.event || !dto.prediction || dto.odds === undefined) {
         res.status(400).json({
-          error: 'Missing required fields: tipsterId, event, prediction, odds',
+          error: 'Missing required fields: event, prediction, odds',
         });
         return;
       }
 
-      const tip = await tipService.createTip(dto);
+      const tip = await tipService.createTip(req.user.userId, dto);
 
       res.status(201).json(tip);
     } catch (error) {
       if (error instanceof Error) {
-        // Handle known errors (e.g., tipster not found)
-        if (error.message.includes('not found')) {
-          res.status(404).json({ error: error.message });
+        // Handle known errors
+        if (error.message.includes('tipster profile')) {
+          res.status(403).json({ error: error.message });
           return;
         }
 
