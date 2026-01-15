@@ -1,8 +1,8 @@
 /**
  * Request body for creating a new tip
+ * Note: tipsterId is auto-detected from JWT on backend
  */
 export interface CreateTipDto {
-  tipsterId: string;
   event: string;
   prediction: string;
   odds: number;
@@ -20,14 +20,14 @@ export interface UpdateTipDto {
 }
 
 /**
- * Response shape for a tip
+ * Tip object
  */
-export interface TipResponse {
+export interface Tip {
   id: string;
   tipsterId: string;
   event: string;
   prediction: string;
   odds: number;
   explanation: string | null;
-  createdAt: Date;
+  createdAt: string;
 }
