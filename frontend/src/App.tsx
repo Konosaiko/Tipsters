@@ -6,6 +6,7 @@ import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { TipstersPage } from './pages/TipstersPage';
+import { TipsterDetailPage } from './pages/TipsterDetailPage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/tipsters" element={<TipstersPage />} />
+          <Route path="/tipsters/:id" element={<TipsterDetailPage />} />
 
           {/* Protected routes */}
           <Route

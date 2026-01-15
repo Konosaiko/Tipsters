@@ -1,5 +1,5 @@
 import { db } from '../lib/db';
-import { CreateTipDto, UpdateTipDto, TipResponse } from '../types/tip.types';
+import { CreateTipDto, UpdateTipDto, TipResponse, TipWithTipster } from '../types/tip.types';
 
 /**
  * Tip Service
@@ -48,10 +48,21 @@ export class TipService {
   /**
    * Get all tips
    *
-   * @returns Array of all tips, ordered by creation date (newest first)
+   * @returns Array of all tips with tipster info, ordered by creation date (newest first)
    */
-  async getAllTips(): Promise<TipResponse[]> {
+  async getAllTips(): Promise<TipWithTipster[]> {
     const tips = await db.tip.findMany({
+      include: {
+        tipster: {
+          include: {
+            user: {
+              select: {
+                username: true,
+              },
+            },
+          },
+        },
+      },
       orderBy: {
         createdAt: 'desc',
       },

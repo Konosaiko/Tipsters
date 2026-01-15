@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Layout } from '../components/layout/Layout';
 import { tipApi } from '../api/tip.api';
-import { Tip } from '../types/tip.types';
+import { TipWithTipster } from '../types/tip.types';
 
 export const HomePage = () => {
-  const [tips, setTips] = useState<Tip[]>([]);
+  const [tips, setTips] = useState<TipWithTipster[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -54,7 +55,16 @@ export const HomePage = () => {
                 <li key={tip.id} className="px-4 py-4 sm:px-6 hover:bg-gray-50">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-indigo-600">{tip.event}</p>
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="text-sm font-medium text-indigo-600">{tip.event}</p>
+                        <span className="text-gray-400">•</span>
+                        <Link
+                          to={`/tipsters/${tip.tipster.id}`}
+                          className="text-sm text-gray-600 hover:text-indigo-600"
+                        >
+                          by {tip.tipster.displayName}
+                        </Link>
+                      </div>
                       <p className="mt-1 text-sm text-gray-900">
                         <span className="font-semibold">Prediction:</span> {tip.prediction}
                       </p>

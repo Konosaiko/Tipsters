@@ -31,3 +31,17 @@ export interface Tip {
   explanation: string | null;
   createdAt: string;
 }
+
+/**
+ * Tip object with tipster information
+ * Used in public tip listings
+ */
+export interface TipWithTipster extends Tip {
+  tipster: {
+    id: string;
+    displayName: string;
+    user: {
+      username: string;
+    };
+  };
+}

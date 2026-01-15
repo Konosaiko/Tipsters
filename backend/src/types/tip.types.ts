@@ -31,3 +31,17 @@ export interface TipResponse {
   explanation: string | null;
   createdAt: Date;
 }
+
+/**
+ * Response shape for a tip with tipster information
+ * Used in public tip listings
+ */
+export interface TipWithTipster extends TipResponse {
+  tipster: {
+    id: string;
+    displayName: string;
+    user: {
+      username: string;
+    };
+  };
+}

@@ -1,5 +1,5 @@
 import apiClient from './client';
-import { CreateTipDto, UpdateTipDto, Tip } from '../types/tip.types';
+import { CreateTipDto, UpdateTipDto, Tip, TipWithTipster } from '../types/tip.types';
 
 /**
  * Tip API endpoints
@@ -15,9 +15,10 @@ export const tipApi = {
 
   /**
    * Get all tips (public)
+   * Returns tips with tipster information
    */
-  async getAllTips(): Promise<Tip[]> {
-    const response = await apiClient.get<Tip[]>('/tips');
+  async getAllTips(): Promise<TipWithTipster[]> {
+    const response = await apiClient.get<TipWithTipster[]>('/tips');
     return response.data;
   },
 
