@@ -24,4 +24,9 @@ router.patch('/:id', authenticate, (req, res) => tipController.updateTip(req, re
 // DELETE /api/tips/:id - Delete a tip (protected - owner only)
 router.delete('/:id', authenticate, (req, res) => tipController.deleteTip(req, res));
 
+// PATCH /api/tips/:id/result - Mark tip result (protected - owner only)
+router.patch('/:id/result', authenticate, (req, res) =>
+  tipController.markTipResult(req, res)
+);
+
 export default router;

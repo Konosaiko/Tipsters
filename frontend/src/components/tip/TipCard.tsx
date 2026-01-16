@@ -1,14 +1,17 @@
 import { useState } from 'react';
 import { Tip, UpdateTipDto } from '../../types/tip.types';
 import { tipApi } from '../../api/tip.api';
+import { TipResultBadge } from './TipResultBadge';
+import { MarkResultButton } from './MarkResultButton';
 
 interface TipCardProps {
   tip: Tip;
   onUpdate: () => void;
   onDelete: () => void;
+  onResultMarked?: () => void;
 }
 
-export const TipCard = ({ tip, onUpdate, onDelete }: TipCardProps) => {
+export const TipCard = ({ tip, onUpdate, onDelete, onResultMarked }: TipCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [formData, setFormData] = useState<UpdateTipDto>({
@@ -139,6 +142,12 @@ export const TipCard = ({ tip, onUpdate, onDelete }: TipCardProps) => {
           <span className="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
             @{tip.odds}
           </span>
+
+          <TipResultBadge result={tip.result} />
+
+          {onResultMarked && (
+            <MarkResultButton tip={tip} onResultMarked={onResultMarked} />
+          )}
 
           <div className="flex space-x-2">
             <button

@@ -5,12 +5,18 @@ import { CreateTipsterForm } from '../components/tipster/CreateTipsterForm';
 import { CreateTipForm } from '../components/tip/CreateTipForm';
 import { MyTips } from '../components/tip/MyTips';
 import { tipsterApi } from '../api/tipster.api';
+import { statsApi } from '../api/stats.api';
 import { Tipster } from '../types/tipster.types';
+import { TipsterStats, PeriodFilter } from '../types/stats.types';
+import { StatsPanel } from '../components/stats/StatsPanel';
 
 export const DashboardPage = () => {
   const { user } = useAuth();
   const [tipsterProfile, setTipsterProfile] = useState<Tipster | null>(null);
+  const [stats, setStats] = useState<TipsterStats | null>(null);
+  const [period, setPeriod] = useState<PeriodFilter>('all');
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingStats, setIsLoadingStats] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
@@ -35,6 +41,54 @@ export const DashboardPage = () => {
 
   const handleTipCreated = () => {
     setRefreshKey((prev) => prev + 1);
+  };
+
+  const handleTipResultMarked = () => {
+    setRefreshKey((prev) => prev + 1);
+    // Re-fetch stats when result is marked
+    if (tipsterProfile) {
+      fetchStats();
+    }
+  };
+
+  const handlePeriodChange = (newPeriod: PeriodFilter) => {
+    setPeriod(newPeriod);
+  };
+
+  // Fetch stats when tipster profile exists
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (!tipsterProfile) {
+        setStats(null);
+        return;
+      }
+
+      try {
+        setIsLoadingStats(true);
+        const data = await statsApi.getTipsterStats(tipsterProfile.id, period);
+        setStats(data);
+      } catch (err) {
+        console.error('Failed to load stats:', err);
+      } finally {
+        setIsLoadingStats(false);
+      }
+    };
+
+    fetchStats();
+  }, [tipsterProfile, period, refreshKey]);
+
+  const fetchStats = async () => {
+    if (!tipsterProfile) return;
+
+    try {
+      setIsLoadingStats(true);
+      const data = await statsApi.getTipsterStats(tipsterProfile.id, period);
+      setStats(data);
+    } catch (err) {
+      console.error('Failed to load stats:', err);
+    } finally {
+      setIsLoadingStats(false);
+    }
   };
 
   if (isLoading) {
@@ -91,9 +145,18 @@ export const DashboardPage = () => {
                 )}
               </div>
 
+              {stats && (
+                <StatsPanel
+                  stats={stats}
+                  period={period}
+                  onPeriodChange={handlePeriodChange}
+                  isLoading={isLoadingStats}
+                />
+              )}
+
               <CreateTipForm onSuccess={handleTipCreated} />
 
-              <MyTips key={refreshKey} />
+              <MyTips key={refreshKey} onResultMarked={handleTipResultMarked} />
             </>
           )}
         </div>

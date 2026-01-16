@@ -1,4 +1,13 @@
 /**
+ * Tip result enum
+ */
+export enum TipResult {
+  WON = 'WON',
+  LOST = 'LOST',
+  VOID = 'VOID',
+}
+
+/**
  * Request body for creating a new tip
  */
 export interface CreateTipDto {
@@ -20,6 +29,13 @@ export interface UpdateTipDto {
 }
 
 /**
+ * Request body for marking a tip result
+ */
+export interface MarkTipResultDto {
+  result: TipResult;
+}
+
+/**
  * Response shape for a tip
  */
 export interface TipResponse {
@@ -29,5 +45,23 @@ export interface TipResponse {
   prediction: string;
   odds: number;
   explanation: string | null;
+  result: TipResult | null;
+  settledAt: Date | null;
+  stake: number;
   createdAt: Date;
+  updatedAt: Date;
+}
+
+/**
+ * Response shape for a tip with tipster information
+ * Used in public tip listings
+ */
+export interface TipWithTipster extends TipResponse {
+  tipster: {
+    id: string;
+    displayName: string;
+    user: {
+      username: string;
+    };
+  };
 }

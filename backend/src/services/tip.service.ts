@@ -1,5 +1,12 @@
 import { db } from '../lib/db';
-import { CreateTipDto, UpdateTipDto, TipResponse } from '../types/tip.types';
+import {
+  CreateTipDto,
+  UpdateTipDto,
+  TipResponse,
+  TipWithTipster,
+  TipResult,
+  MarkTipResultDto,
+} from '../types/tip.types';
 
 /**
  * Tip Service
@@ -48,10 +55,21 @@ export class TipService {
   /**
    * Get all tips
    *
-   * @returns Array of all tips, ordered by creation date (newest first)
+   * @returns Array of all tips with tipster info, ordered by creation date (newest first)
    */
-  async getAllTips(): Promise<TipResponse[]> {
+  async getAllTips(): Promise<TipWithTipster[]> {
     const tips = await db.tip.findMany({
+      include: {
+        tipster: {
+          include: {
+            user: {
+              select: {
+                username: true,
+              },
+            },
+          },
+        },
+      },
       orderBy: {
         createdAt: 'desc',
       },
@@ -154,6 +172,54 @@ export class TipService {
     await db.tip.delete({
       where: { id: tipId },
     });
+  }
+
+  /**
+   * Mark a tip result (authenticated, owner only)
+   *
+   * @param tipId - The tip ID
+   * @param userId - The authenticated user ID
+   * @param data - Result data
+   * @returns The updated tip
+   * @throws Error if tip not found, user is not the owner, or tip already settled
+   */
+  async markTipResult(
+    tipId: string,
+    userId: string,
+    data: MarkTipResultDto
+  ): Promise<TipResponse> {
+    // Find the tip with its tipster relation
+    const tip = await db.tip.findUnique({
+      where: { id: tipId },
+      include: {
+        tipster: true,
+      },
+    });
+
+    if (!tip) {
+      throw new Error(`Tip with id ${tipId} not found`);
+    }
+
+    // Check ownership: user must own the tipster who created this tip
+    if (tip.tipster.userId !== userId) {
+      throw new Error('You can only mark results for your own tips');
+    }
+
+    // Prevent changing result if already settled
+    if (tip.result !== null) {
+      throw new Error('Tip result has already been marked. Cannot change result.');
+    }
+
+    // Update the tip with result
+    const updatedTip = await db.tip.update({
+      where: { id: tipId },
+      data: {
+        result: data.result,
+        settledAt: new Date(),
+      },
+    });
+
+    return updatedTip;
   }
 }
 

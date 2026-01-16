@@ -37,12 +37,22 @@ model Tipster {
 }
 
 model Tip {
-  id          String   @id @default(uuid())
+  id          String     @id @default(uuid())
   tipsterId   String
-  tipster     Tipster  @relation(fields: [tipsterId], references: [id], onDelete: Cascade)
+  tipster     Tipster    @relation(fields: [tipsterId], references: [id], onDelete: Cascade)
   event       String
   prediction  String
   odds        Float
   explanation String?
-  createdAt   DateTime @default(now())
+  result      TipResult? // null = pending, set when tipster marks result
+  settledAt   DateTime?  // when result was marked by tipster
+  stake       Float      @default(1) // always 1 unit, hidden from public
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+enum TipResult {
+  WON
+  LOST
+  VOID
 }
