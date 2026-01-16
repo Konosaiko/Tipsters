@@ -3,7 +3,11 @@ import { Tip } from '../../types/tip.types';
 import { tipApi } from '../../api/tip.api';
 import { TipCard } from './TipCard';
 
-export const MyTips = () => {
+interface MyTipsProps {
+  onResultMarked?: () => void;
+}
+
+export const MyTips = ({ onResultMarked }: MyTipsProps) => {
   const [tips, setTips] = useState<Tip[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -57,6 +61,10 @@ export const MyTips = () => {
                 tip={tip}
                 onUpdate={fetchTips}
                 onDelete={fetchTips}
+                onResultMarked={() => {
+                  fetchTips();
+                  onResultMarked?.();
+                }}
               />
             ))}
           </div>

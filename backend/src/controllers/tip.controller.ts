@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { tipService } from '../services/tip.service';
-import { CreateTipDto, UpdateTipDto } from '../types/tip.types';
+import { CreateTipDto, UpdateTipDto, MarkTipResultDto } from '../types/tip.types';
 import { AuthRequest } from '../middleware/auth.middleware';
 
 /**
@@ -166,6 +166,54 @@ export class TipController {
       }
 
       console.error('Error deleting tip:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  /**
+   * PATCH /api/tips/:id/result
+   * Mark a tip result (authenticated, owner only)
+   */
+  async markTipResult(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      if (!req.user) {
+        res.status(401).json({ error: 'Authentication required' });
+        return;
+      }
+
+      const { id } = req.params;
+      const dto: MarkTipResultDto = req.body;
+
+      // Validate result
+      if (!dto.result || !['WON', 'LOST', 'VOID'].includes(dto.result)) {
+        res
+          .status(400)
+          .json({ error: 'Invalid result. Must be WON, LOST, or VOID' });
+        return;
+      }
+
+      const tip = await tipService.markTipResult(id, req.user.userId, dto);
+
+      res.status(200).json(tip);
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message.includes('not found')) {
+          res.status(404).json({ error: error.message });
+          return;
+        }
+
+        if (error.message.includes('only mark results for your own')) {
+          res.status(403).json({ error: error.message });
+          return;
+        }
+
+        if (error.message.includes('already been marked')) {
+          res.status(400).json({ error: error.message });
+          return;
+        }
+      }
+
+      console.error('Error marking tip result:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }

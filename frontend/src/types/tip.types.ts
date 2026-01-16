@@ -1,4 +1,13 @@
 /**
+ * Tip result enum
+ */
+export enum TipResult {
+  WON = 'WON',
+  LOST = 'LOST',
+  VOID = 'VOID',
+}
+
+/**
  * Request body for creating a new tip
  * Note: tipsterId is auto-detected from JWT on backend
  */
@@ -20,6 +29,13 @@ export interface UpdateTipDto {
 }
 
 /**
+ * Request body for marking a tip result
+ */
+export interface MarkTipResultDto {
+  result: TipResult;
+}
+
+/**
  * Tip object
  */
 export interface Tip {
@@ -29,7 +45,11 @@ export interface Tip {
   prediction: string;
   odds: number;
   explanation: string | null;
+  result: TipResult | null;
+  settledAt: string | null;
+  stake: number;
   createdAt: string;
+  updatedAt: string;
 }
 
 /**

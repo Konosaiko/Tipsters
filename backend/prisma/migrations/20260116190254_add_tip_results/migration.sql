@@ -1,0 +1,8 @@
+-- CreateEnum
+CREATE TYPE "TipResult" AS ENUM ('WON', 'LOST', 'VOID');
+
+-- AlterTable
+ALTER TABLE "Tip" ADD COLUMN     "result" "TipResult",
+ADD COLUMN     "settledAt" TIMESTAMP(3),
+ADD COLUMN     "stake" DOUBLE PRECISION NOT NULL DEFAULT 1,
+ADD COLUMN     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;

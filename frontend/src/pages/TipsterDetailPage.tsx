@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { tipsterApi } from '../api/tipster.api';
+import { statsApi } from '../api/stats.api';
 import { TipsterWithDetails } from '../types/tipster.types';
+import { TipsterStats, PeriodFilter } from '../types/stats.types';
 import { PublicTipCard } from '../components/tip/PublicTipCard';
+import { StatsPanel } from '../components/stats/StatsPanel';
+import { TipResultBadge } from '../components/tip/TipResultBadge';
 
 /**
  * Page displaying a single tipster's profile and all their tips
@@ -11,9 +15,13 @@ import { PublicTipCard } from '../components/tip/PublicTipCard';
 export const TipsterDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const [tipster, setTipster] = useState<TipsterWithDetails | null>(null);
+  const [stats, setStats] = useState<TipsterStats | null>(null);
+  const [period, setPeriod] = useState<PeriodFilter>('all');
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingStats, setIsLoadingStats] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch tipster profile
   useEffect(() => {
     const fetchTipster = async () => {
       if (!id) {
@@ -38,6 +46,30 @@ export const TipsterDetailPage = () => {
 
     fetchTipster();
   }, [id]);
+
+  // Fetch tipster stats
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (!id) return;
+
+      try {
+        setIsLoadingStats(true);
+        const data = await statsApi.getTipsterStats(id, period);
+        setStats(data);
+      } catch (err) {
+        console.error('Failed to load stats:', err);
+        // Don't show error for stats - they're supplementary
+      } finally {
+        setIsLoadingStats(false);
+      }
+    };
+
+    fetchStats();
+  }, [id, period]);
+
+  const handlePeriodChange = (newPeriod: PeriodFilter) => {
+    setPeriod(newPeriod);
+  };
 
   if (isLoading) {
     return (
@@ -109,6 +141,18 @@ export const TipsterDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Stats Panel */}
+      {stats && (
+        <div className="mb-8">
+          <StatsPanel
+            stats={stats}
+            period={period}
+            onPeriodChange={handlePeriodChange}
+            isLoading={isLoadingStats}
+          />
+        </div>
+      )}
 
       {/* Tips Section */}
       <div>

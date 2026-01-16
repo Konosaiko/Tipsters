@@ -1,5 +1,12 @@
 import apiClient from './client';
-import { CreateTipDto, UpdateTipDto, Tip, TipWithTipster } from '../types/tip.types';
+import {
+  CreateTipDto,
+  UpdateTipDto,
+  Tip,
+  TipWithTipster,
+  MarkTipResultDto,
+  TipResult,
+} from '../types/tip.types';
 
 /**
  * Tip API endpoints
@@ -41,9 +48,18 @@ export const tipApi = {
 
   /**
    * Delete a tip (requires auth, owner only)
-   * Note: This endpoint needs to be added to backend
    */
   async deleteTip(id: string): Promise<void> {
     await apiClient.delete(`/tips/${id}`);
+  },
+
+  /**
+   * Mark a tip result (requires auth, owner only)
+   */
+  async markTipResult(id: string, result: TipResult): Promise<Tip> {
+    const response = await apiClient.patch<Tip>(`/tips/${id}/result`, {
+      result,
+    });
+    return response.data;
   },
 };

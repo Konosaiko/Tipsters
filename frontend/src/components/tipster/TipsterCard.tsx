@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { TipsterWithDetails } from '../../types/tipster.types';
+import { TipResult } from '../../types/tip.types';
 
 interface TipsterCardProps {
   tipster: TipsterWithDetails;
@@ -11,6 +12,39 @@ interface TipsterCardProps {
  */
 export const TipsterCard = ({ tipster }: TipsterCardProps) => {
   const tipCount = tipster._count?.tips ?? 0;
+
+  // Calculate basic stats from tips
+  const tips = tipster.tips || [];
+  const settledTips = tips.filter((t) => t.result !== null);
+  const wonTips = tips.filter((t) => t.result === TipResult.WON);
+  const voidTips = tips.filter((t) => t.result === TipResult.VOID);
+
+  // Calculate win rate (excluding void tips)
+  const settledExcludingVoid = settledTips.length - voidTips.length;
+  const winRate =
+    settledExcludingVoid > 0
+      ? Math.round((wonTips.length / settledExcludingVoid) * 100)
+      : null;
+
+  // Calculate ROI
+  let roi: number | null = null;
+  if (settledTips.length > 0) {
+    let totalStake = 0;
+    let totalReturns = 0;
+
+    settledTips.forEach((tip) => {
+      const stake = tip.stake || 1;
+      totalStake += stake;
+
+      if (tip.result === TipResult.WON) {
+        totalReturns += stake * tip.odds;
+      } else if (tip.result === TipResult.VOID) {
+        totalReturns += stake;
+      }
+    });
+
+    roi = totalStake > 0 ? Math.round(((totalReturns - totalStake) / totalStake) * 10000) / 100 : null;
+  }
 
   return (
     <Link
@@ -30,19 +64,46 @@ export const TipsterCard = ({ tipster }: TipsterCardProps) => {
       </div>
 
       <div className="mt-4 pt-4 border-t border-gray-200">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold text-blue-600">{tipCount}</p>
-              <p className="text-xs text-gray-600">
-                {tipCount === 1 ? 'Tip' : 'Tips'}
-              </p>
+        {settledTips.length >= 5 ? (
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-gray-700">
+              <span className="font-semibold text-indigo-600">
+                {winRate !== null ? `${winRate}%` : 'N/A'}
+              </span>
+              <span className="text-gray-500 mx-1">•</span>
+              <span
+                className={`font-semibold ${
+                  roi !== null && roi > 0
+                    ? 'text-green-600'
+                    : roi !== null && roi < 0
+                    ? 'text-red-600'
+                    : 'text-gray-600'
+                }`}
+              >
+                {roi !== null ? (roi > 0 ? `+${roi}%` : `${roi}%`) : 'N/A'}
+              </span>
+              <span className="text-gray-500 mx-1">•</span>
+              <span className="text-gray-600">{tipCount} tips</span>
             </div>
+            <span className="text-indigo-600 text-sm font-medium hover:underline">
+              View Profile →
+            </span>
           </div>
-          <span className="text-blue-600 text-sm font-medium hover:underline">
-            View Profile →
-          </span>
-        </div>
+        ) : (
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-gray-600">
+              {tipCount} {tipCount === 1 ? 'tip' : 'tips'}
+              {settledTips.length > 0 && settledTips.length < 5 && (
+                <span className="text-xs text-gray-500 ml-2">
+                  (Need 5+ settled tips for stats)
+                </span>
+              )}
+            </div>
+            <span className="text-indigo-600 text-sm font-medium hover:underline">
+              View Profile →
+            </span>
+          </div>
+        )}
       </div>
     </Link>
   );

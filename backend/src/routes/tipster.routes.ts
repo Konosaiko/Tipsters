@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { tipsterController } from '../controllers/tipster.controller';
+import { statsController } from '../controllers/stats.controller';
 import { authenticate } from '../middleware/auth.middleware';
 
 /**
@@ -19,6 +20,9 @@ router.get('/', (req, res) => tipsterController.getAllTipsters(req, res));
 router.get('/me/profile', authenticate, (req, res) =>
   tipsterController.getMyTipsterProfile(req, res)
 );
+
+// GET /api/tipsters/:id/stats?period=30d - Get tipster stats (public)
+router.get('/:id/stats', (req, res) => statsController.getTipsterStats(req, res));
 
 // GET /api/tipsters/:id - Get a tipster by ID (public)
 router.get('/:id', (req, res) => tipsterController.getTipsterById(req, res));

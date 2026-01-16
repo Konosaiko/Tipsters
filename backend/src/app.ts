@@ -3,6 +3,7 @@ import cors from 'cors';
 import authRoutes from './routes/auth.routes';
 import tipsterRoutes from './routes/tipster.routes';
 import tipRoutes from './routes/tip.routes';
+import statsRoutes from './routes/stats.routes';
 
 const app = express();
 
@@ -25,5 +26,6 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/tipsters', tipsterRoutes);
 app.use('/api/tips', tipRoutes);
+app.use('/api/stats', statsRoutes);
 
 export default app;

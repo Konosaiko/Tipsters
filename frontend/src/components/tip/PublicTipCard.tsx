@@ -1,4 +1,5 @@
 import { Tip } from '../../types/tip.types';
+import { TipResultBadge } from './TipResultBadge';
 
 interface PublicTipCardProps {
   tip: Tip;
@@ -25,10 +26,11 @@ export const PublicTipCard = ({ tip }: PublicTipCardProps) => {
           </p>
         </div>
 
-        <div className="ml-4">
+        <div className="ml-4 flex flex-col items-end space-y-2">
           <span className="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
             @{tip.odds}
           </span>
+          <TipResultBadge result={tip.result} />
         </div>
       </div>
     </div>

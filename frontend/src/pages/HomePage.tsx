@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Layout } from '../components/layout/Layout';
 import { tipApi } from '../api/tip.api';
 import { TipWithTipster } from '../types/tip.types';
+import { TopPerformers } from '../components/stats/TopPerformers';
 
 export const HomePage = () => {
   const [tips, setTips] = useState<TipWithTipster[]>([]);
@@ -34,6 +35,10 @@ export const HomePage = () => {
           <p className="mt-4 text-xl text-gray-600">
             Get expert sports betting tips from verified tipsters
           </p>
+        </div>
+
+        <div className="mb-8">
+          <TopPerformers />
         </div>
 
         <div className="bg-white shadow overflow-hidden sm:rounded-lg">
