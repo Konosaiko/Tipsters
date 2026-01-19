@@ -28,8 +28,8 @@ export const StatsPanel = ({
     );
   }
 
-  const roiTrend = stats.roi > 0 ? 'positive' : stats.roi < 0 ? 'negative' : 'neutral';
-  const profitTrend = stats.profit > 0 ? 'positive' : stats.profit < 0 ? 'negative' : 'neutral';
+  const roiTrend = (stats.roi ?? 0) > 0 ? 'positive' : (stats.roi ?? 0) < 0 ? 'negative' : 'neutral';
+  const profitTrend = (stats.profit ?? 0) > 0 ? 'positive' : (stats.profit ?? 0) < 0 ? 'negative' : 'neutral';
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">
@@ -43,19 +43,19 @@ export const StatsPanel = ({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <StatsCard
           label="ROI"
-          value={stats.roi.toFixed(2)}
+          value={(stats.roi ?? 0).toFixed(2)}
           suffix="%"
           trend={roiTrend}
         />
         <StatsCard
           label="Win Rate"
-          value={stats.winRate.toFixed(1)}
+          value={(stats.winRate ?? 0).toFixed(1)}
           suffix="%"
-          trend={stats.winRate >= 50 ? 'positive' : 'neutral'}
+          trend={(stats.winRate ?? 0) >= 50 ? 'positive' : 'neutral'}
         />
         <StatsCard
           label="Profit/Loss"
-          value={stats.profit >= 0 ? `+${stats.profit.toFixed(2)}` : stats.profit.toFixed(2)}
+          value={(stats.profit ?? 0) >= 0 ? `+${(stats.profit ?? 0).toFixed(2)}` : (stats.profit ?? 0).toFixed(2)}
           suffix="u"
           trend={profitTrend}
         />
@@ -80,7 +80,7 @@ export const StatsPanel = ({
           </div>
           <div>
             <p className="text-gray-600">Avg Odds</p>
-            <p className="text-lg font-semibold text-gray-900">{stats.averageOdds.toFixed(2)}</p>
+            <p className="text-lg font-semibold text-gray-900">{(stats.averageOdds ?? 0).toFixed(2)}</p>
           </div>
         </div>
 
