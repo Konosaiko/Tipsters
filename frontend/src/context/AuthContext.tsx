@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import { authApi } from '../api/auth.api';
 import { storage } from '../utils/storage';
 import { User, LoginDto, RegisterDto, JwtPayload } from '../types/auth.types';
@@ -14,6 +14,17 @@ interface AuthContextType {
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+/**
+ * Custom hook to use the AuthContext
+ */
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
 
 interface AuthProviderProps {
   children: ReactNode;
