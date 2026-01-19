@@ -12,6 +12,7 @@ export const CreateTipForm = ({ onSuccess }: CreateTipFormProps) => {
     prediction: '',
     odds: 0,
     explanation: '',
+    stake: 1, // Default to 1 unit
   });
 
   const [error, setError] = useState<string>('');
@@ -30,6 +31,7 @@ export const CreateTipForm = ({ onSuccess }: CreateTipFormProps) => {
         prediction: '',
         odds: 0,
         explanation: '',
+        stake: 1, // Reset to default 1 unit
       });
       onSuccess();
     } catch (err: any) {
@@ -102,6 +104,28 @@ export const CreateTipForm = ({ onSuccess }: CreateTipFormProps) => {
                   setFormData({ ...formData, odds: parseFloat(e.target.value) || 0 })
                 }
               />
+            </div>
+
+            <div>
+              <label htmlFor="stake" className="block text-sm font-medium text-gray-700">
+                Stake (units) *
+              </label>
+              <input
+                type="number"
+                step="0.1"
+                min="0.1"
+                id="stake"
+                required
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                placeholder="e.g., 1"
+                value={formData.stake || 1}
+                onChange={(e) =>
+                  setFormData({ ...formData, stake: parseFloat(e.target.value) || 1 })
+                }
+              />
+              <p className="mt-1 text-xs text-gray-500">
+                Recommended stake in units (e.g., 1u, 2u, 0.5u)
+              </p>
             </div>
 
             <div className="sm:col-span-2">

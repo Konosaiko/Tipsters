@@ -38,6 +38,11 @@ export class TipService {
       throw new Error('Odds must be greater than 0');
     }
 
+    // Validate stake if provided (must be positive)
+    if (data.stake !== undefined && data.stake <= 0) {
+      throw new Error('Stake must be greater than 0');
+    }
+
     // Create the tip
     const tip = await db.tip.create({
       data: {
@@ -46,6 +51,7 @@ export class TipService {
         prediction: data.prediction,
         odds: data.odds,
         explanation: data.explanation,
+        stake: data.stake ?? 1, // Default to 1 unit if not provided
       },
     });
 
@@ -129,6 +135,11 @@ export class TipService {
       throw new Error('Odds must be greater than 0');
     }
 
+    // Validate stake if provided
+    if (data.stake !== undefined && data.stake <= 0) {
+      throw new Error('Stake must be greater than 0');
+    }
+
     // Update the tip
     const updatedTip = await db.tip.update({
       where: { id: tipId },
@@ -137,6 +148,7 @@ export class TipService {
         prediction: data.prediction,
         odds: data.odds,
         explanation: data.explanation,
+        stake: data.stake,
       },
     });
 

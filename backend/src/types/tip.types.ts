@@ -16,6 +16,7 @@ export interface CreateTipDto {
   prediction: string;
   odds: number;
   explanation?: string;
+  stake?: number; // In units (e.g., 1u, 2u, 0.5u). Defaults to 1
 }
 
 /**
@@ -26,6 +27,7 @@ export interface UpdateTipDto {
   prediction?: string;
   odds?: number;
   explanation?: string;
+  stake?: number; // In units (e.g., 1u, 2u, 0.5u)
 }
 
 /**
