@@ -21,6 +21,7 @@ model User {
   password  String    // Hashed password
   birthDate DateTime
   tipster   Tipster?  // One-to-one: a user can have one tipster profile
+  follows   Follow[]  // Tipsters this user follows
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
@@ -32,6 +33,7 @@ model Tipster {
   displayName String
   bio         String?
   tips        Tip[]
+  followers   Follow[] // Users who follow this tipster
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -49,6 +51,19 @@ model Tip {
   stake       Float      @default(1) // always 1 unit, hidden from public
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+}
+
+model Follow {
+  id         String   @id @default(uuid())
+  userId     String   // User who follows
+  tipsterId  String   // Tipster being followed
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tipster    Tipster  @relation(fields: [tipsterId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, tipsterId]) // A user can only follow a tipster once
+  @@index([userId])
+  @@index([tipsterId])
 }
 
 enum TipResult {

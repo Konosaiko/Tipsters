@@ -4,6 +4,7 @@ import authRoutes from './routes/auth.routes';
 import tipsterRoutes from './routes/tipster.routes';
 import tipRoutes from './routes/tip.routes';
 import statsRoutes from './routes/stats.routes';
+import followRoutes from './routes/follow.routes';
 
 const app = express();
 
@@ -27,5 +28,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/tipsters', tipsterRoutes);
 app.use('/api/tips', tipRoutes);
 app.use('/api/stats', statsRoutes);
+app.use('/api/follow', followRoutes);
 
 export default app;

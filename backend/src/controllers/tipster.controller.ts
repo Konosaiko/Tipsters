@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { tipsterService } from '../services/tipster.service';
+import { followService } from '../services/follow.service';
 import { CreateTipsterDto, UpdateTipsterDto } from '../types/tipster.types';
 import { AuthRequest } from '../middleware/auth.middleware';
 
@@ -56,7 +57,26 @@ export class TipsterController {
   async getAllTipsters(req: Request, res: Response): Promise<void> {
     try {
       const tipsters = await tipsterService.getAllTipsters();
-      res.status(200).json(tipsters);
+
+      // Get follower counts for all tipsters
+      const tipsterIds = tipsters.map((t: any) => t.id);
+      const followerCounts = await followService.getFollowerCounts(tipsterIds);
+
+      // Check if user is authenticated to add isFollowing data
+      const userId = (req as any).user?.id;
+      let followedIds: string[] = [];
+      if (userId) {
+        followedIds = await followService.getFollowedTipsters(userId);
+      }
+
+      // Add follower data to each tipster
+      const tipstersWithFollowData = tipsters.map((tipster: any) => ({
+        ...tipster,
+        followerCount: followerCounts.get(tipster.id) || 0,
+        isFollowing: followedIds.includes(tipster.id),
+      }));
+
+      res.status(200).json(tipstersWithFollowData);
     } catch (error) {
       console.error('Error fetching tipsters:', error);
       res.status(500).json({ error: 'Internal server error' });
@@ -72,7 +92,25 @@ export class TipsterController {
       const { id } = req.params;
 
       const tipster = await tipsterService.getTipsterById(id);
-      res.status(200).json(tipster);
+
+      // Get follower count
+      const followerCount = await followService.getFollowerCount(id);
+
+      // Check if user is authenticated and following
+      const userId = (req as any).user?.id;
+      let isFollowing = false;
+      if (userId) {
+        isFollowing = await followService.isFollowing(userId, id);
+      }
+
+      // Add follower data
+      const tipsterWithFollowData = {
+        ...tipster,
+        followerCount,
+        isFollowing,
+      };
+
+      res.status(200).json(tipsterWithFollowData);
     } catch (error) {
       if (error instanceof Error && error.message.includes('not found')) {
         res.status(404).json({ error: error.message });

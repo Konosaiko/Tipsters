@@ -39,6 +39,8 @@ export interface TipsterWithDetails extends Tipster {
     tips: number;
   };
   tips?: Tip[];
+  followerCount?: number;
+  isFollowing?: boolean;
 }
 
 // Import Tip type
