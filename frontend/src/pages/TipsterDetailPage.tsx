@@ -8,6 +8,7 @@ import { TipsterStats, PeriodFilter } from '../types/stats.types';
 import { PublicTipCard } from '../components/tip/PublicTipCard';
 import { StatsPanel } from '../components/stats/StatsPanel';
 import { TipResultBadge } from '../components/tip/TipResultBadge';
+import { FollowButton } from '../components/follow/FollowButton';
 
 /**
  * Page displaying a single tipster's profile and all their tips
@@ -72,7 +73,20 @@ export const TipsterDetailPage = () => {
     setPeriod(newPeriod);
   };
 
+  const handleFollowChange = async () => {
+    // Refetch tipster data to get updated follower count
+    if (id) {
+      try {
+        const data = await tipsterApi.getTipsterById(id);
+        setTipster(data);
+      } catch (err) {
+        console.error('Failed to refresh tipster data:', err);
+      }
+    }
+  };
+
   const tipCount = tipster?.tips?.length ?? 0;
+  const followerCount = tipster?.followerCount ?? 0;
 
   return (
     <Layout>
@@ -104,16 +118,25 @@ export const TipsterDetailPage = () => {
 
       {/* Tipster Profile Card */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-8 border border-gray-200">
-        <div className="flex items-start justify-between">
+        <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
               {tipster.displayName}
             </h1>
-            <p className="text-gray-600 mb-4">@{tipster.user.username}</p>
+            <p className="text-gray-600 mb-2">@{tipster.user.username}</p>
+            <p className="text-sm text-gray-500 mb-4">
+              {followerCount} {followerCount === 1 ? 'follower' : 'followers'}
+            </p>
             {tipster.bio && (
               <p className="text-gray-700 leading-relaxed">{tipster.bio}</p>
             )}
           </div>
+          <FollowButton
+            tipsterId={tipster.id}
+            isFollowing={tipster.isFollowing ?? false}
+            onFollowChange={handleFollowChange}
+            size="md"
+          />
         </div>
 
         <div className="mt-6 pt-6 border-t border-gray-200">

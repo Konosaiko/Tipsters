@@ -13,24 +13,29 @@ export const TipstersPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchTipsters = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const data = await tipsterApi.getAllTipsters();
-        setTipsters(data);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'Failed to load tipsters'
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const fetchTipsters = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const data = await tipsterApi.getAllTipsters();
+      setTipsters(data);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : 'Failed to load tipsters'
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchTipsters();
   }, []);
+
+  const handleFollowChange = () => {
+    // Refetch all tipsters to update follower counts
+    fetchTipsters();
+  };
 
   return (
     <Layout>
@@ -65,7 +70,11 @@ export const TipstersPage = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {tipsters.map((tipster) => (
-                <TipsterCard key={tipster.id} tipster={tipster} />
+                <TipsterCard
+                  key={tipster.id}
+                  tipster={tipster}
+                  onFollowChange={handleFollowChange}
+                />
               ))}
             </div>
           )}
