@@ -8,10 +8,14 @@ import { TipsterCard } from '../components/tipster/TipsterCard';
  * Public page displaying all tipsters
  * Users can browse and click to view individual tipster profiles
  */
+type SortOption = 'newest' | 'followers' | 'tips';
+
 export const TipstersPage = () => {
   const [tipsters, setTipsters] = useState<TipsterWithDetails[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState<SortOption>('newest');
 
   const fetchTipsters = async () => {
     try {
@@ -37,6 +41,28 @@ export const TipstersPage = () => {
     fetchTipsters();
   };
 
+  // Filter and sort tipsters
+  const filteredAndSortedTipsters = tipsters
+    .filter((tipster) => {
+      if (!searchQuery) return true;
+      const query = searchQuery.toLowerCase();
+      return (
+        tipster.displayName.toLowerCase().includes(query) ||
+        tipster.user.username.toLowerCase().includes(query) ||
+        tipster.bio?.toLowerCase().includes(query)
+      );
+    })
+    .sort((a, b) => {
+      if (sortBy === 'followers') {
+        return (b.followerCount || 0) - (a.followerCount || 0);
+      }
+      if (sortBy === 'tips') {
+        return (b._count?.tips || 0) - (a._count?.tips || 0);
+      }
+      // Default: newest first
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+
   return (
     <Layout>
       {isLoading ? (
@@ -60,7 +86,41 @@ export const TipstersPage = () => {
             </p>
           </div>
 
-          {tipsters.length === 0 ? (
+          {/* Search and Filter Bar */}
+          <div className="mb-6 flex flex-col sm:flex-row gap-4">
+            <div className="flex-1">
+              <input
+                type="text"
+                placeholder="Search by name, username, or bio..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div className="sm:w-48">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as SortOption)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="newest">Newest First</option>
+                <option value="followers">Most Followers</option>
+                <option value="tips">Most Tips</option>
+              </select>
+            </div>
+          </div>
+
+          {filteredAndSortedTipsters.length === 0 && tipsters.length > 0 ? (
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+              <p className="text-gray-600 mb-2">No tipsters match your search</p>
+              <button
+                onClick={() => setSearchQuery('')}
+                className="text-sm text-indigo-600 hover:text-indigo-800"
+              >
+                Clear search
+              </button>
+            </div>
+          ) : tipsters.length === 0 ? (
             <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
               <p className="text-gray-600 mb-2">No tipsters found</p>
               <p className="text-sm text-gray-500">
@@ -69,7 +129,7 @@ export const TipstersPage = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {tipsters.map((tipster) => (
+              {filteredAndSortedTipsters.map((tipster) => (
                 <TipsterCard
                   key={tipster.id}
                   tipster={tipster}
