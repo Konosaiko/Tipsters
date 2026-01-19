@@ -30,6 +30,9 @@ export const PublicTipCard = ({ tip }: PublicTipCardProps) => {
           <span className="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
             @{tip.odds}
           </span>
+          <span className="px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
+            {tip.stake}u
+          </span>
           <TipResultBadge result={tip.result} />
         </div>
       </div>

@@ -19,6 +19,7 @@ export const TipCard = ({ tip, onUpdate, onDelete, onResultMarked }: TipCardProp
     prediction: tip.prediction,
     odds: tip.odds,
     explanation: tip.explanation || '',
+    stake: tip.stake,
   });
   const [error, setError] = useState('');
 
@@ -68,26 +69,41 @@ export const TipCard = ({ tip, onUpdate, onDelete, onResultMarked }: TipCardProp
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Prediction</label>
-              <input
-                type="text"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                value={formData.prediction}
-                onChange={(e) => setFormData({ ...formData, prediction: e.target.value })}
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Prediction</label>
+            <input
+              type="text"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              value={formData.prediction}
+              onChange={(e) => setFormData({ ...formData, prediction: e.target.value })}
+            />
+          </div>
 
+          <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-gray-700">Odds</label>
               <input
                 type="number"
                 step="0.01"
+                min="1.01"
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 value={formData.odds}
                 onChange={(e) =>
                   setFormData({ ...formData, odds: parseFloat(e.target.value) || 0 })
+                }
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Stake (units)</label>
+              <input
+                type="number"
+                step="0.1"
+                min="0.1"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                value={formData.stake}
+                onChange={(e) =>
+                  setFormData({ ...formData, stake: parseFloat(e.target.value) || 1 })
                 }
               />
             </div>
@@ -141,6 +157,10 @@ export const TipCard = ({ tip, onUpdate, onDelete, onResultMarked }: TipCardProp
         <div className="ml-4 flex flex-col items-end space-y-2">
           <span className="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
             @{tip.odds}
+          </span>
+
+          <span className="px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
+            {tip.stake}u
           </span>
 
           <TipResultBadge result={tip.result} />
