@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { Layout } from '../components/layout/Layout';
 import { tipsterApi } from '../api/tipster.api';
 import { statsApi } from '../api/stats.api';
 import { TipsterWithDetails } from '../types/tipster.types';
@@ -71,34 +72,28 @@ export const TipsterDetailPage = () => {
     setPeriod(newPeriod);
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-gray-600">Loading tipster...</div>
-      </div>
-    );
-  }
-
-  if (error || !tipster) {
-    return (
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-          {error || 'Tipster not found'}
-        </div>
-        <Link
-          to="/tipsters"
-          className="mt-4 inline-block text-indigo-600 hover:text-indigo-800"
-        >
-          ← Back to all tipsters
-        </Link>
-      </div>
-    );
-  }
-
-  const tipCount = tipster.tips?.length ?? 0;
+  const tipCount = tipster?.tips?.length ?? 0;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <Layout>
+      {isLoading ? (
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-gray-600">Loading tipster...</div>
+        </div>
+      ) : error || !tipster ? (
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+            {error || 'Tipster not found'}
+          </div>
+          <Link
+            to="/tipsters"
+            className="mt-4 inline-block text-indigo-600 hover:text-indigo-800"
+          >
+            ← Back to all tipsters
+          </Link>
+        </div>
+      ) : (
+        <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Back link */}
       <Link
         to="/tipsters"
@@ -170,6 +165,8 @@ export const TipsterDetailPage = () => {
           </div>
         )}
       </div>
-    </div>
+        </div>
+      )}
+    </Layout>
   );
 };
