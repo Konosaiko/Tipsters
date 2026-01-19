@@ -46,6 +46,7 @@ export class StatsService {
     const { roi, profit } = this.calculateROI(tips);
     const averageOdds = this.calculateAverageOdds(tips);
     const yieldValue = totalTips > 0 ? profit / totalTips : 0;
+    const safeYield = isNaN(yieldValue) ? 0 : yieldValue;
 
     // Calculate streaks
     const { win: longestWinStreak, lose: longestLoseStreak } =
@@ -62,7 +63,7 @@ export class StatsService {
       roi,
       profit,
       averageOdds,
-      yield: yieldValue,
+      yield: safeYield,
       longestWinStreak,
       longestLoseStreak,
     };
@@ -168,12 +169,13 @@ export class StatsService {
     tips.forEach((tip) => {
       if (tip.result === null) return; // Skip pending tips
 
-      totalStake += tip.stake;
+      const stake = tip.stake ?? 1; // Default to 1 if null
+      totalStake += stake;
 
       if (tip.result === TipResult.WON) {
-        totalReturns += tip.stake * tip.odds; // Stake * odds for wins
+        totalReturns += stake * tip.odds; // Stake * odds for wins
       } else if (tip.result === TipResult.VOID) {
-        totalReturns += tip.stake; // Return stake for void
+        totalReturns += stake; // Return stake for void
       }
       // Lost tips contribute 0 to returns
     });
@@ -181,9 +183,10 @@ export class StatsService {
     const profit = totalReturns - totalStake;
     const roi = totalStake > 0 ? (profit / totalStake) * 100 : 0;
 
+    // Ensure we never return NaN or null
     return {
-      roi: Math.round(roi * 100) / 100, // 2 decimal places
-      profit: Math.round(profit * 100) / 100, // 2 decimal places
+      roi: isNaN(roi) ? 0 : Math.round(roi * 100) / 100, // 2 decimal places
+      profit: isNaN(profit) ? 0 : Math.round(profit * 100) / 100, // 2 decimal places
     };
   }
 
@@ -193,8 +196,9 @@ export class StatsService {
   private calculateAverageOdds(tips: any[]): number {
     if (tips.length === 0) return 0;
 
-    const totalOdds = tips.reduce((sum, tip) => sum + tip.odds, 0);
-    return Math.round((totalOdds / tips.length) * 100) / 100; // 2 decimal places
+    const totalOdds = tips.reduce((sum, tip) => sum + (tip.odds ?? 0), 0);
+    const average = totalOdds / tips.length;
+    return isNaN(average) ? 0 : Math.round(average * 100) / 100; // 2 decimal places
   }
 
   /**
