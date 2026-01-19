@@ -1,17 +1,20 @@
 import { Link } from 'react-router-dom';
 import { TipsterWithDetails } from '../../types/tipster.types';
 import { TipResult } from '../../types/tip.types';
+import { FollowButton } from '../follow/FollowButton';
 
 interface TipsterCardProps {
   tipster: TipsterWithDetails;
+  onFollowChange?: () => void;
 }
 
 /**
  * Card component to display tipster summary
  * Used in TipstersPage to list all tipsters
  */
-export const TipsterCard = ({ tipster }: TipsterCardProps) => {
+export const TipsterCard = ({ tipster, onFollowChange }: TipsterCardProps) => {
   const tipCount = tipster._count?.tips ?? 0;
+  const followerCount = tipster.followerCount ?? 0;
 
   // Calculate basic stats from tips
   const tips = tipster.tips || [];
@@ -47,19 +50,27 @@ export const TipsterCard = ({ tipster }: TipsterCardProps) => {
   }
 
   return (
-    <Link
-      to={`/tipsters/${tipster.id}`}
-      className="block bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-200"
-    >
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <h3 className="text-xl font-bold text-gray-900 mb-2">
+    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-200">
+      <div className="flex items-start justify-between mb-4">
+        <Link to={`/tipsters/${tipster.id}`} className="flex-1">
+          <h3 className="text-xl font-bold text-gray-900 mb-2 hover:text-indigo-600">
             {tipster.displayName}
           </h3>
           <p className="text-sm text-gray-600 mb-1">@{tipster.user.username}</p>
+          <p className="text-xs text-gray-500">
+            {followerCount} {followerCount === 1 ? 'follower' : 'followers'}
+          </p>
           {tipster.bio && (
             <p className="text-gray-700 mt-3 line-clamp-2">{tipster.bio}</p>
           )}
+        </Link>
+        <div onClick={(e) => e.stopPropagation()}>
+          <FollowButton
+            tipsterId={tipster.id}
+            isFollowing={tipster.isFollowing ?? false}
+            onFollowChange={onFollowChange}
+            size="sm"
+          />
         </div>
       </div>
 
@@ -85,9 +96,12 @@ export const TipsterCard = ({ tipster }: TipsterCardProps) => {
               <span className="text-gray-500 mx-1">•</span>
               <span className="text-gray-600">{tipCount} tips</span>
             </div>
-            <span className="text-indigo-600 text-sm font-medium hover:underline">
+            <Link
+              to={`/tipsters/${tipster.id}`}
+              className="text-indigo-600 text-sm font-medium hover:underline"
+            >
               View Profile →
-            </span>
+            </Link>
           </div>
         ) : (
           <div className="flex items-center justify-between">
@@ -99,12 +113,15 @@ export const TipsterCard = ({ tipster }: TipsterCardProps) => {
                 </span>
               )}
             </div>
-            <span className="text-indigo-600 text-sm font-medium hover:underline">
+            <Link
+              to={`/tipsters/${tipster.id}`}
+              className="text-indigo-600 text-sm font-medium hover:underline"
+            >
               View Profile →
-            </span>
+            </Link>
           </div>
         )}
       </div>
-    </Link>
+    </div>
   );
 };

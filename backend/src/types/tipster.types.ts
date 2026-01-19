@@ -41,3 +41,11 @@ export interface TipsterWithUser {
   createdAt: Date;
   updatedAt: Date;
 }
+
+/**
+ * Tipster with follow data (for authenticated requests)
+ */
+export interface TipsterWithFollowData extends TipsterWithUser {
+  followerCount: number;
+  isFollowing: boolean;
+}
