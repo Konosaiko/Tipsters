@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { tipController } from '../controllers/tip.controller';
-import { authenticate } from '../middleware/auth.middleware';
+import { authenticate, optionalAuth } from '../middleware/auth.middleware';
 
 /**
  * Tip Routes
@@ -11,6 +11,9 @@ const router = Router();
 
 // POST /api/tips - Create a new tip (protected - authenticated tipsters only)
 router.post('/', authenticate, (req, res) => tipController.createTip(req, res));
+
+// GET /api/tips/feed?filter=all|following - Get tips feed (public, but reads auth if present)
+router.get('/feed', optionalAuth, (req, res) => tipController.getTipsFeed(req, res));
 
 // GET /api/tips - Get all tips (public)
 router.get('/', (req, res) => tipController.getAllTips(req, res));

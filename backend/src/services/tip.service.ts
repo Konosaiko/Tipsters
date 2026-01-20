@@ -85,6 +85,61 @@ export class TipService {
   }
 
   /**
+   * Get tips feed (for feed page)
+   *
+   * @param userId - Optional authenticated user ID (for filtering by followed)
+   * @param filter - 'all' or 'following'
+   * @returns Array of tips with tipster info, ordered by creation date (newest first)
+   */
+  async getTipsFeed(userId?: string, filter: 'all' | 'following' = 'all'): Promise<TipWithTipster[]> {
+    // If filtering by following, we need a userId
+    if (filter === 'following' && !userId) {
+      return [];
+    }
+
+    // Build the where clause
+    const where: any = {};
+
+    if (filter === 'following' && userId) {
+      // Get tipster IDs that the user follows
+      const follows = await db.follow.findMany({
+        where: { userId },
+        select: { tipsterId: true },
+      });
+
+      const followedTipsterIds = follows.map((f) => f.tipsterId);
+
+      if (followedTipsterIds.length === 0) {
+        // User doesn't follow anyone
+        return [];
+      }
+
+      where.tipsterId = { in: followedTipsterIds };
+    }
+
+    const tips = await db.tip.findMany({
+      where,
+      include: {
+        tipster: {
+          include: {
+            user: {
+              select: {
+                username: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 50, // Limit to 50 most recent tips for performance
+    });
+
+    return tips;
+  }
+
+  /**
    * Get a single tip by ID
    *
    * @param id - The tip ID
