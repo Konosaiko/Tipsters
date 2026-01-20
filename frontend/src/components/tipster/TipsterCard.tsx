@@ -6,13 +6,14 @@ import { FollowButton } from '../follow/FollowButton';
 interface TipsterCardProps {
   tipster: TipsterWithDetails;
   onFollowChange?: () => void;
+  currentUserId?: string;
 }
 
 /**
  * Card component to display tipster summary
  * Used in TipstersPage to list all tipsters
  */
-export const TipsterCard = ({ tipster, onFollowChange }: TipsterCardProps) => {
+export const TipsterCard = ({ tipster, onFollowChange, currentUserId }: TipsterCardProps) => {
   const tipCount = tipster._count?.tips ?? 0;
   const followerCount = tipster.followerCount ?? 0;
 
@@ -64,14 +65,16 @@ export const TipsterCard = ({ tipster, onFollowChange }: TipsterCardProps) => {
             <p className="text-gray-700 mt-3 line-clamp-2">{tipster.bio}</p>
           )}
         </Link>
-        <div onClick={(e) => e.stopPropagation()}>
-          <FollowButton
-            tipsterId={tipster.id}
-            isFollowing={tipster.isFollowing ?? false}
-            onFollowChange={onFollowChange}
-            size="sm"
-          />
-        </div>
+        {currentUserId !== tipster.userId && (
+          <div onClick={(e) => e.stopPropagation()}>
+            <FollowButton
+              tipsterId={tipster.id}
+              isFollowing={tipster.isFollowing ?? false}
+              onFollowChange={onFollowChange}
+              size="sm"
+            />
+          </div>
+        )}
       </div>
 
       <div className="mt-4 pt-4 border-t border-gray-200">

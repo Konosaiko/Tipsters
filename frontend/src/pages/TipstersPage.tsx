@@ -3,6 +3,7 @@ import { Layout } from '../components/layout/Layout';
 import { tipsterApi } from '../api/tipster.api';
 import { TipsterWithDetails } from '../types/tipster.types';
 import { TipsterCard } from '../components/tipster/TipsterCard';
+import { useAuth } from '../context/AuthContext';
 
 /**
  * Public page displaying all tipsters
@@ -11,6 +12,7 @@ import { TipsterCard } from '../components/tipster/TipsterCard';
 type SortOption = 'newest' | 'followers' | 'tips';
 
 export const TipstersPage = () => {
+  const { user } = useAuth();
   const [tipsters, setTipsters] = useState<TipsterWithDetails[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -134,6 +136,7 @@ export const TipstersPage = () => {
                   key={tipster.id}
                   tipster={tipster}
                   onFollowChange={handleFollowChange}
+                  currentUserId={user?.id}
                 />
               ))}
             </div>
