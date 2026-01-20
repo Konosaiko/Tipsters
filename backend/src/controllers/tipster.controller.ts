@@ -63,7 +63,7 @@ export class TipsterController {
       const followerCounts = await followService.getFollowerCounts(tipsterIds);
 
       // Check if user is authenticated to add isFollowing data
-      const userId = (req as any).user?.id;
+      const userId = (req as any).user?.userId;
       let followedIds: string[] = [];
       if (userId) {
         followedIds = await followService.getFollowedTipsters(userId);
@@ -97,7 +97,7 @@ export class TipsterController {
       const followerCount = await followService.getFollowerCount(id);
 
       // Check if user is authenticated and following
-      const userId = (req as any).user?.id;
+      const userId = (req as any).user?.userId;
       let isFollowing = false;
       if (userId) {
         isFollowing = await followService.isFollowing(userId, id);
