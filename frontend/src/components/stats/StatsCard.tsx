@@ -12,17 +12,17 @@ export const StatsCard = ({ label, value, suffix = '', trend = 'neutral' }: Stat
   const getTrendColor = () => {
     switch (trend) {
       case 'positive':
-        return 'text-green-600';
+        return 'text-success-500';
       case 'negative':
         return 'text-red-600';
       default:
-        return 'text-indigo-600';
+        return 'text-primary-600';
     }
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4">
-      <p className="text-sm font-medium text-gray-600 mb-1">{label}</p>
+    <div className="bg-white rounded-lg border border-neutral-200 p-4">
+      <p className="text-sm font-medium text-neutral-600 mb-1">{label}</p>
       <p className={`text-3xl font-bold ${getTrendColor()}`}>
         {value}
         {suffix && <span className="text-lg ml-1">{suffix}</span>}

@@ -44,8 +44,8 @@ export const CreateTipForm = ({ onSuccess }: CreateTipFormProps) => {
   return (
     <div className="bg-white shadow sm:rounded-lg">
       <div className="px-4 py-5 sm:p-6">
-        <h3 className="text-lg leading-6 font-medium text-gray-900">Publish a New Tip</h3>
-        <div className="mt-2 max-w-xl text-sm text-gray-500">
+        <h3 className="className="text-lg leading-6 font-medium text-neutral-900">Publish a New Tip</h3>
+        <div className="className="mt-2 max-w-xl text-sm text-neutral-500">
           <p>Share your betting prediction with subscribers.</p>
         </div>
 
@@ -58,14 +58,14 @@ export const CreateTipForm = ({ onSuccess }: CreateTipFormProps) => {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <label htmlFor="event" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="event" className="className="block text-sm font-medium text-neutral-700">
                 Event *
               </label>
               <input
                 type="text"
                 id="event"
                 required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="className="className="mt-1 block w-full border border-neutral-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                 placeholder="e.g., Lakers vs Warriors - NBA"
                 value={formData.event}
                 onChange={(e) => setFormData({ ...formData, event: e.target.value })}
@@ -73,14 +73,14 @@ export const CreateTipForm = ({ onSuccess }: CreateTipFormProps) => {
             </div>
 
             <div>
-              <label htmlFor="prediction" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="prediction" className="className="block text-sm font-medium text-neutral-700">
                 Prediction *
               </label>
               <input
                 type="text"
                 id="prediction"
                 required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="className="className="mt-1 block w-full border border-neutral-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                 placeholder="e.g., Lakers to win"
                 value={formData.prediction}
                 onChange={(e) => setFormData({ ...formData, prediction: e.target.value })}
@@ -88,7 +88,7 @@ export const CreateTipForm = ({ onSuccess }: CreateTipFormProps) => {
             </div>
 
             <div>
-              <label htmlFor="odds" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="odds" className="className="block text-sm font-medium text-neutral-700">
                 Odds *
               </label>
               <input
@@ -97,7 +97,7 @@ export const CreateTipForm = ({ onSuccess }: CreateTipFormProps) => {
                 min="1.01"
                 id="odds"
                 required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="className="className="mt-1 block w-full border border-neutral-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                 placeholder="e.g., 2.15"
                 value={formData.odds || ''}
                 onChange={(e) =>
@@ -107,7 +107,7 @@ export const CreateTipForm = ({ onSuccess }: CreateTipFormProps) => {
             </div>
 
             <div>
-              <label htmlFor="stake" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="stake" className="className="block text-sm font-medium text-neutral-700">
                 Stake (units) *
               </label>
               <input
@@ -116,26 +116,26 @@ export const CreateTipForm = ({ onSuccess }: CreateTipFormProps) => {
                 min="0.1"
                 id="stake"
                 required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="className="className="mt-1 block w-full border border-neutral-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                 placeholder="e.g., 1"
                 value={formData.stake || 1}
                 onChange={(e) =>
                   setFormData({ ...formData, stake: parseFloat(e.target.value) || 1 })
                 }
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="className="mt-1 text-xs text-neutral-500">
                 Recommended stake in units (e.g., 1u, 2u, 0.5u)
               </p>
             </div>
 
             <div className="sm:col-span-2">
-              <label htmlFor="explanation" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="explanation" className="className="block text-sm font-medium text-neutral-700">
                 Explanation (Optional)
               </label>
               <textarea
                 id="explanation"
                 rows={3}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="className="className="mt-1 block w-full border border-neutral-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                 placeholder="Why do you recommend this bet?"
                 value={formData.explanation}
                 onChange={(e) => setFormData({ ...formData, explanation: e.target.value })}
@@ -147,7 +147,7 @@ export const CreateTipForm = ({ onSuccess }: CreateTipFormProps) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Publishing...' : 'Publish Tip'}
             </button>
