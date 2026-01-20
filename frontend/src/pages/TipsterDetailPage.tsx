@@ -92,7 +92,7 @@ export const TipsterDetailPage = () => {
     <Layout>
       {isLoading ? (
         <div className="flex items-center justify-center min-h-[400px]">
-          <div className="className="text-neutral-600">Loading tipster...</div>
+          <div className="text-neutral-600">Loading tipster...</div>
         </div>
       ) : error || !tipster ? (
         <div className="max-w-4xl mx-auto px-4 py-8">
@@ -101,7 +101,7 @@ export const TipsterDetailPage = () => {
           </div>
           <Link
             to="/tipsters"
-            className="className="mt-4 inline-block text-primary-600 hover:text-primary-800"
+            className="mt-4 inline-block text-primary-600 hover:text-primary-800"
           >
             ← Back to all tipsters
           </Link>
@@ -111,24 +111,24 @@ export const TipsterDetailPage = () => {
       {/* Back link */}
       <Link
         to="/tipsters"
-        className="className="inline-flex items-center text-primary-600 hover:text-primary-800 mb-6"
+        className="inline-flex items-center text-primary-600 hover:text-primary-800 mb-6"
       >
         ← Back to all tipsters
       </Link>
 
       {/* Tipster Profile Card */}
-      <div className="className="bg-white rounded-lg shadow-md p-6 mb-8 border border-neutral-200">
+      <div className="bg-white rounded-lg shadow-md p-6 mb-8 border border-neutral-200">
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
-            <h1 className="className="text-3xl font-bold text-neutral-900 mb-2">
+            <h1 className="text-3xl font-bold text-neutral-900 mb-2">
               {tipster.displayName}
             </h1>
-            <p className="className="text-neutral-600 mb-2">@{tipster.user.username}</p>
-            <p className="className="text-sm text-neutral-500 mb-4">
+            <p className="text-neutral-600 mb-2">@{tipster.user.username}</p>
+            <p className="text-sm text-neutral-500 mb-4">
               {followerCount} {followerCount === 1 ? 'follower' : 'followers'}
             </p>
             {tipster.bio && (
-              <p className="className="text-neutral-700 leading-relaxed">{tipster.bio}</p>
+              <p className="text-neutral-700 leading-relaxed">{tipster.bio}</p>
             )}
           </div>
           <FollowButton
@@ -139,16 +139,16 @@ export const TipsterDetailPage = () => {
           />
         </div>
 
-        <div className="className="mt-6 pt-6 border-t border-neutral-200">
+        <div className="mt-6 pt-6 border-t border-neutral-200">
           <div className="flex items-center gap-6">
             <div>
-              <p className="className="text-3xl font-bold text-primary-600">{tipCount}</p>
-              <p className="className="text-sm text-neutral-600">
+              <p className="text-3xl font-bold text-primary-600">{tipCount}</p>
+              <p className="text-sm text-neutral-600">
                 {tipCount === 1 ? 'Tip Published' : 'Tips Published'}
               </p>
             </div>
             <div>
-              <p className="className="text-sm text-neutral-600">
+              <p className="text-sm text-neutral-600">
                 Member since{' '}
                 {new Date(tipster.createdAt).toLocaleDateString('en-US', {
                   month: 'long',
@@ -174,11 +174,11 @@ export const TipsterDetailPage = () => {
 
       {/* Tips Section */}
       <div>
-        <h2 className="className="text-2xl font-bold text-neutral-900 mb-4">Published Tips</h2>
+        <h2 className="text-2xl font-bold text-neutral-900 mb-4">Published Tips</h2>
 
         {tipCount === 0 ? (
-          <div className="className="bg-neutral-50 border border-neutral-200 rounded-lg p-8 text-center">
-            <p className="className="text-neutral-600">This tipster hasn't published any tips yet</p>
+          <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-8 text-center">
+            <p className="text-neutral-600">This tipster hasn't published any tips yet</p>
           </div>
         ) : (
           <div className="space-y-4">

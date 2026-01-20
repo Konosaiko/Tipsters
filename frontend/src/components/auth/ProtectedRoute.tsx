@@ -16,7 +16,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="className="text-neutral-600">Loading...</div>
+        <div className="text-neutral-600">Loading...</div>
       </div>
     );
   }
