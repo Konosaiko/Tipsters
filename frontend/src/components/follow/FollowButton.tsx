@@ -20,6 +20,7 @@ export const FollowButton = ({
   const navigate = useNavigate();
   const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
   const [isLoading, setIsLoading] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -58,17 +59,29 @@ export const FollowButton = ({
   const baseClasses =
     'font-medium rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed';
 
+  // Change button style on hover when following
   const variantClasses = isFollowing
-    ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+    ? isHovered
+      ? 'bg-red-600 text-white'
+      : 'bg-gray-200 text-gray-700 hover:bg-red-600 hover:text-white'
     : 'bg-indigo-600 text-white hover:bg-indigo-700';
+
+  // Show "Unfollow" on hover when following
+  const getButtonText = () => {
+    if (isLoading) return 'Loading...';
+    if (isFollowing) return isHovered ? 'Unfollow' : 'Following';
+    return 'Follow';
+  };
 
   return (
     <button
       onClick={handleClick}
       disabled={isLoading}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       className={`${baseClasses} ${sizeClasses[size]} ${variantClasses}`}
     >
-      {isLoading ? 'Loading...' : isFollowing ? 'Following' : 'Follow'}
+      {getButtonText()}
     </button>
   );
 };
