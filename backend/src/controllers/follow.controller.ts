@@ -13,7 +13,7 @@ export class FollowController {
    */
   async followTipster(req: Request, res: Response): Promise<void> {
     try {
-      const userId = (req as any).user.id; // From auth middleware
+      const userId = (req as any).user.userId; // From auth middleware
       const { tipsterId } = req.params;
 
       await followService.followTipster(userId, tipsterId);
@@ -30,7 +30,7 @@ export class FollowController {
    */
   async unfollowTipster(req: Request, res: Response): Promise<void> {
     try {
-      const userId = (req as any).user.id; // From auth middleware
+      const userId = (req as any).user.userId; // From auth middleware
       const { tipsterId } = req.params;
 
       await followService.unfollowTipster(userId, tipsterId);
@@ -47,7 +47,7 @@ export class FollowController {
    */
   async getFollowedTipsters(req: Request, res: Response): Promise<void> {
     try {
-      const userId = (req as any).user.id; // From auth middleware
+      const userId = (req as any).user.userId; // From auth middleware
 
       const tipsterIds = await followService.getFollowedTipsters(userId);
 
@@ -63,7 +63,7 @@ export class FollowController {
    */
   async checkFollowStatus(req: Request, res: Response): Promise<void> {
     try {
-      const userId = (req as any).user.id; // From auth middleware
+      const userId = (req as any).user.userId; // From auth middleware
       const { tipsterId } = req.params;
 
       const isFollowing = await followService.isFollowing(userId, tipsterId);
