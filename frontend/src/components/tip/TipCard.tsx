@@ -25,7 +25,7 @@ export const TipCard = ({ tip }: TipCardProps) => {
     };
 
     return (
-      <span className={\`inline-block px-2 py-1 text-xs font-semibold rounded \${colors[tip.result]}\`}>
+      <span className={`inline-block px-2 py-1 text-xs font-semibold rounded ${colors[tip.result]}`}>
         {tip.result}
       </span>
     );
@@ -38,7 +38,7 @@ export const TipCard = ({ tip }: TipCardProps) => {
       {/* Tipster Info */}
       <div className="flex items-center mb-4">
         <Link
-          to={\`/tipsters/\${tip.tipster.id}\`}
+          to={`/tipsters/${tip.tipster.id}`}
           className="flex items-center hover:underline"
         >
           <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold mr-3">

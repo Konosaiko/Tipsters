@@ -55,21 +55,21 @@ export const TipsFeedPage = () => {
           <div className="flex space-x-8">
             <button
               onClick={() => setFilter('all')}
-              className={\`pb-4 px-1 border-b-2 font-medium text-sm transition-colors \${
+              className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
                 filter === 'all'
                   ? 'border-indigo-600 text-indigo-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }\`}
+              }`}
             >
               All Tips
             </button>
             <button
               onClick={() => setFilter('following')}
-              className={\`pb-4 px-1 border-b-2 font-medium text-sm transition-colors \${
+              className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
                 filter === 'following'
                   ? 'border-indigo-600 text-indigo-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }\`}
+              }`}
             >
               Following
               {!user && (
