@@ -17,6 +17,14 @@ export const TipsterCard = ({ tipster, onFollowChange, currentUserId }: TipsterC
   const tipCount = tipster._count?.tips ?? 0;
   const followerCount = tipster.followerCount ?? 0;
 
+  // Debug logging
+  console.log('TipsterCard:', {
+    tipsterName: tipster.displayName,
+    tipsterUserId: tipster.userId,
+    currentUserId,
+    shouldShowButton: currentUserId !== tipster.userId,
+  });
+
   // Calculate basic stats from tips
   const tips = tipster.tips || [];
   const settledTips = tips.filter((t) => t.result !== null);
