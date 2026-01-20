@@ -24,6 +24,11 @@ export const TipstersPage = () => {
       setIsLoading(true);
       setError(null);
       const data = await tipsterApi.getAllTipsters();
+      console.log('Fetched tipsters:', data.map(t => ({
+        name: t.displayName,
+        id: t.id,
+        isFollowing: t.isFollowing,
+      })));
       setTipsters(data);
     } catch (err) {
       setError(

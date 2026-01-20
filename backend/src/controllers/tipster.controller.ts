@@ -67,6 +67,10 @@ export class TipsterController {
       let followedIds: string[] = [];
       if (userId) {
         followedIds = await followService.getFollowedTipsters(userId);
+        console.log('GET /tipsters - userId:', userId);
+        console.log('GET /tipsters - followedIds:', followedIds);
+      } else {
+        console.log('GET /tipsters - No authenticated user');
       }
 
       // Add follower data to each tipster
