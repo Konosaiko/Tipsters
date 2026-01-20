@@ -44,7 +44,9 @@ export const FollowButton = ({
       onFollowChange?.();
     } catch (error: any) {
       console.error('Follow error:', error);
-      alert(error.response?.data?.error || 'Failed to update follow status');
+      console.error('Error response:', error.response?.data);
+      const errorMessage = error.response?.data?.error || 'Failed to update follow status';
+      alert(errorMessage);
     } finally {
       setIsLoading(false);
     }
