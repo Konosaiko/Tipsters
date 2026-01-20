@@ -44,10 +44,10 @@ export const TipsFeedPage = () => {
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="className="text-3xl font-bold text-neutral-900 mb-2">
+          <h1 className="text-3xl font-bold text-neutral-900 mb-2">
             {filter === 'following' ? 'Following' : 'Discover Tips'}
           </h1>
-          <p className="className="text-neutral-600">
+          <p className="text-neutral-600">
             {filter === 'following'
               ? 'Tips from tipsters you follow'
               : 'Latest predictions from expert tipsters'}
@@ -55,7 +55,7 @@ export const TipsFeedPage = () => {
         </div>
 
         {/* Tabs */}
-        <div className="className="mb-6 border-b border-neutral-200">
+        <div className="mb-6 border-b border-neutral-200">
           <div className="flex space-x-8">
             <button
               onClick={() => setFilter('all')}
@@ -77,7 +77,7 @@ export const TipsFeedPage = () => {
             >
               Following
               {!user && (
-                <span className="className="ml-2 px-2 py-0.5 text-xs bg-neutral-200 text-neutral-600 rounded">
+                <span className="ml-2 px-2 py-0.5 text-xs bg-neutral-200 text-neutral-600 rounded">
                   Login required
                 </span>
               )}
@@ -88,15 +88,15 @@ export const TipsFeedPage = () => {
         {/* Content */}
         {isLoading ? (
           <div className="flex items-center justify-center min-h-[400px]">
-            <div className="className="text-neutral-600">Loading tips...</div>
+            <div className="text-neutral-600">Loading tips...</div>
           </div>
         ) : error ? (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
             {error}
           </div>
         ) : tips.length === 0 ? (
-          <div className="className="bg-neutral-50 border border-neutral-200 rounded-lg p-8 text-center">
-            <p className="className="text-neutral-600 mb-2">
+          <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-8 text-center">
+            <p className="text-neutral-600 mb-2">
               {filter === 'following'
                 ? "You haven't followed any tipsters yet"
                 : 'No tips found'}
@@ -104,7 +104,7 @@ export const TipsFeedPage = () => {
             {filter === 'following' && (
               <a
                 href="/tipsters"
-                className="className="text-sm text-primary-600 hover:text-primary-800"
+                className="text-sm text-primary-600 hover:text-primary-800"
               >
                 Browse tipsters to follow
               </a>
