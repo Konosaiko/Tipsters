@@ -30,6 +30,18 @@ export const tipApi = {
   },
 
   /**
+   * Get tips feed (public, but uses auth if present)
+   * Returns tips with tipster information
+   * @param filter - 'all' or 'following'
+   */
+  async getTipsFeed(filter: 'all' | 'following' = 'all'): Promise<TipWithTipster[]> {
+    const response = await apiClient.get<TipWithTipster[]>('/tips/feed', {
+      params: { filter },
+    });
+    return response.data;
+  },
+
+  /**
    * Get a tip by ID (public)
    */
   async getTipById(id: string): Promise<Tip> {

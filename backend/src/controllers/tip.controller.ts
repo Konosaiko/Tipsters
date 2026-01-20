@@ -70,6 +70,35 @@ export class TipController {
   }
 
   /**
+   * GET /api/tips/feed?filter=all|following
+   * Get tips feed (with optional filter for followed tipsters)
+   */
+  async getTipsFeed(req: Request, res: Response): Promise<void> {
+    try {
+      const filter = (req.query.filter as 'all' | 'following') || 'all';
+      const userId = (req as any).user?.userId; // From optionalAuth middleware
+
+      // Validate filter parameter
+      if (filter !== 'all' && filter !== 'following') {
+        res.status(400).json({ error: 'Invalid filter. Must be "all" or "following"' });
+        return;
+      }
+
+      // If filter is 'following' but user is not authenticated, return error
+      if (filter === 'following' && !userId) {
+        res.status(401).json({ error: 'You must be logged in to view your following feed' });
+        return;
+      }
+
+      const tips = await tipService.getTipsFeed(userId, filter);
+      res.status(200).json(tips);
+    } catch (error) {
+      console.error('Error fetching tips feed:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  /**
    * GET /api/tips/:id
    * Get a single tip by ID
    */

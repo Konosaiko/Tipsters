@@ -21,6 +21,12 @@ export const Navbar = () => {
                 Home
               </Link>
               <Link
+                to="/feed"
+                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-indigo-600"
+              >
+                Feed
+              </Link>
+              <Link
                 to="/tipsters"
                 className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-indigo-600"
               >
