@@ -95,7 +95,7 @@ export const DashboardPage = () => {
     return (
       <Layout>
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-          <p className="text-gray-500">Loading...</p>
+          <p className="className="text-neutral-500">Loading...</p>
         </div>
       </Layout>
     );
@@ -105,9 +105,9 @@ export const DashboardPage = () => {
     <Layout>
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Welcome, {user?.username}!</h1>
+          <h1 className="className="text-3xl font-bold text-neutral-900">Welcome, {user?.username}!</h1>
           {tipsterProfile && (
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="className="mt-2 text-sm text-neutral-600">
               Tipster: <span className="font-semibold">{tipsterProfile.displayName}</span>
             </p>
           )}
@@ -132,14 +132,14 @@ export const DashboardPage = () => {
           ) : (
             <>
               <div className="bg-white shadow sm:rounded-lg p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                <h2 className="className="text-xl font-semibold text-neutral-900 mb-2">
                   Your Tipster Profile
                 </h2>
-                <p className="text-sm text-gray-600">
+                <p className="className="text-sm text-neutral-600">
                   <span className="font-medium">Display Name:</span> {tipsterProfile.displayName}
                 </p>
                 {tipsterProfile.bio && (
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="className="text-sm text-neutral-600 mt-1">
                     <span className="font-medium">Bio:</span> {tipsterProfile.bio}
                   </p>
                 )}

@@ -15,7 +15,7 @@ export const PeriodFilter = ({ value, onChange }: PeriodFilterProps) => {
     <select
       value={value}
       onChange={(e) => onChange(e.target.value as PeriodFilterType)}
-      className="block px-3 py-2 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+      className="block px-3 py-2 text-sm border border-neutral-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
     >
       {periods.map((period) => (
         <option key={period} value={period}>

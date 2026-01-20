@@ -45,34 +45,34 @@ export const MarkResultButton = ({ tip, onResultMarked }: MarkResultButtonProps)
       <button
         onClick={() => setIsOpen(!isOpen)}
         disabled={isMarking}
-        className="px-3 py-1 text-sm border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+        className="className="px-3 py-1 text-sm border border-neutral-300 rounded-md text-neutral-700 hover:bg-neutral-50 disabled:opacity-50"
       >
         {isMarking ? 'Marking...' : 'Mark Result ▾'}
       </button>
 
       {isOpen && !isMarking && (
-        <div className="absolute right-0 mt-1 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+        <div className="className="absolute right-0 mt-1 w-40 bg-white border border-neutral-200 rounded-md shadow-lg z-10">
           <button
             onClick={() => markResult(TipResult.WON)}
-            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700"
+            className="className="className="block w-full text-left px-4 py-2 text-sm text-neutral-700 hover:bg-success-50 hover:text-success-700"
           >
             Mark as Won
           </button>
           <button
             onClick={() => markResult(TipResult.LOST)}
-            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700"
+            className="className="block w-full text-left px-4 py-2 text-sm text-neutral-700 hover:bg-red-50 hover:text-red-700"
           >
             Mark as Lost
           </button>
           <button
             onClick={() => markResult(TipResult.VOID)}
-            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+            className="className="block w-full text-left px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50"
           >
             Mark as Cancelled
           </button>
           <button
             onClick={() => setIsOpen(false)}
-            className="block w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 border-t border-gray-200"
+            className="className="block w-full text-left px-4 py-2 text-sm text-neutral-500 hover:bg-neutral-50 border-t border-neutral-200"
           >
             Cancel
           </button>

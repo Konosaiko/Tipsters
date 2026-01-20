@@ -65,8 +65,8 @@ export const FollowButton = ({
   const variantClasses = isFollowing
     ? isHovered
       ? 'bg-red-600 text-white'
-      : 'bg-gray-200 text-gray-700 hover:bg-red-600 hover:text-white'
-    : 'bg-indigo-600 text-white hover:bg-indigo-700';
+      : 'bg-neutral-200 text-neutral-700 hover:bg-red-600 hover:text-white'
+    : 'bg-primary-500 text-white hover:bg-primary-600';
 
   // Show "Unfollow" on hover when following
   const getButtonText = () => {

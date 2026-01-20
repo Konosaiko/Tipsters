@@ -18,7 +18,7 @@ export const TipResultBadge = ({ result }: TipResultBadgeProps) => {
 
   if (result === TipResult.WON) {
     return (
-      <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+      <span className="px-2 py-1 text-xs font-semibold rounded-full bg-success-100 text-success-800">
         Won
       </span>
     );
@@ -34,7 +34,7 @@ export const TipResultBadge = ({ result }: TipResultBadgeProps) => {
 
   if (result === TipResult.VOID) {
     return (
-      <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+      <span className="px-2 py-1 text-xs font-semibold rounded-full bg-neutral-100 text-neutral-800">
         Cancelled
       </span>
     );
