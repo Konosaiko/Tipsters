@@ -44,9 +44,13 @@ export const TipsFeedPage = () => {
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Tips Feed</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            {filter === 'following' ? 'Following' : 'Discover Tips'}
+          </h1>
           <p className="text-gray-600">
-            Latest predictions from expert tipsters
+            {filter === 'following'
+              ? 'Tips from tipsters you follow'
+              : 'Latest predictions from expert tipsters'}
           </p>
         </div>
 
