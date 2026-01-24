@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Tip } from '../../types/tip.types';
+import { TipWithTipster } from '../../types/tip.types';
 import { tipApi } from '../../api/tip.api';
 import { TipCard } from './TipCard';
 
@@ -8,7 +8,7 @@ interface MyTipsProps {
 }
 
 export const MyTips = ({ onResultMarked }: MyTipsProps) => {
-  const [tips, setTips] = useState<Tip[]>([]);
+  const [tips, setTips] = useState<TipWithTipster[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
