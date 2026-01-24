@@ -8,6 +8,24 @@ export enum TipResult {
 }
 
 /**
+ * Sport category enum
+ */
+export enum Sport {
+  FOOTBALL = 'FOOTBALL',
+  BASKETBALL = 'BASKETBALL',
+  TENNIS = 'TENNIS',
+  RUGBY = 'RUGBY',
+  MMA = 'MMA',
+  BOXING = 'BOXING',
+  ESPORTS = 'ESPORTS',
+  HOCKEY = 'HOCKEY',
+  VOLLEYBALL = 'VOLLEYBALL',
+  BASEBALL = 'BASEBALL',
+  AMERICAN_FOOTBALL = 'AMERICAN_FOOTBALL',
+  OTHER = 'OTHER',
+}
+
+/**
  * Request body for creating a new tip
  * Note: tipsterId is auto-detected from JWT on backend
  */
@@ -17,6 +35,9 @@ export interface CreateTipDto {
   odds: number;
   explanation?: string;
   stake?: number; // In units (e.g., 1u, 2u, 0.5u). Defaults to 1
+  sport?: Sport; // Sport category for filtering
+  platform?: string; // Betting platform (e.g., Betclic, Winamax)
+  betLink?: string; // Direct link to place the bet
 }
 
 /**
@@ -28,6 +49,9 @@ export interface UpdateTipDto {
   odds?: number;
   explanation?: string;
   stake?: number; // In units (e.g., 1u, 2u, 0.5u)
+  sport?: Sport; // Sport category for filtering
+  platform?: string; // Betting platform (e.g., Betclic, Winamax)
+  betLink?: string; // Direct link to place the bet
 }
 
 /**
@@ -47,6 +71,9 @@ export interface Tip {
   prediction: string;
   odds: number;
   explanation: string | null;
+  sport: Sport | null;
+  platform: string | null;
+  betLink: string | null;
   result: TipResult | null;
   settledAt: string | null;
   stake: number;

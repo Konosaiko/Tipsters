@@ -1,10 +1,21 @@
 import { useState, FormEvent } from 'react';
 import { tipApi } from '../../api/tip.api';
-import { CreateTipDto } from '../../types/tip.types';
+import { CreateTipDto, Sport } from '../../types/tip.types';
 
 interface CreateTipFormProps {
   onSuccess: () => void;
 }
+
+// Common betting platforms
+const PLATFORMS = [
+  'Betclic',
+  'Winamax',
+  'Unibet',
+  'ParionsSport',
+  'PMU',
+  'Bet365',
+  'Other',
+];
 
 export const CreateTipForm = ({ onSuccess }: CreateTipFormProps) => {
   const [formData, setFormData] = useState<CreateTipDto>({
@@ -13,6 +24,9 @@ export const CreateTipForm = ({ onSuccess }: CreateTipFormProps) => {
     odds: 0,
     explanation: '',
     stake: 1, // Default to 1 unit
+    sport: undefined,
+    platform: undefined,
+    betLink: undefined,
   });
 
   const [error, setError] = useState<string>('');
@@ -32,6 +46,9 @@ export const CreateTipForm = ({ onSuccess }: CreateTipFormProps) => {
         odds: 0,
         explanation: '',
         stake: 1, // Reset to default 1 unit
+        sport: undefined,
+        platform: undefined,
+        betLink: undefined,
       });
       onSuccess();
     } catch (err: any) {
@@ -125,6 +142,80 @@ export const CreateTipForm = ({ onSuccess }: CreateTipFormProps) => {
               />
               <p className="mt-1 text-xs text-neutral-500">
                 Recommended stake in units (e.g., 1u, 2u, 0.5u)
+              </p>
+            </div>
+
+            <div>
+              <label htmlFor="sport" className="block text-sm font-medium text-neutral-700">
+                Sport
+              </label>
+              <select
+                id="sport"
+                className="mt-1 block w-full border border-neutral-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                value={formData.sport || ''}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    sport: e.target.value ? (e.target.value as Sport) : undefined,
+                  })
+                }
+              >
+                <option value="">Select a sport</option>
+                <option value={Sport.FOOTBALL}>Football</option>
+                <option value={Sport.BASKETBALL}>Basketball</option>
+                <option value={Sport.TENNIS}>Tennis</option>
+                <option value={Sport.RUGBY}>Rugby</option>
+                <option value={Sport.MMA}>MMA</option>
+                <option value={Sport.BOXING}>Boxing</option>
+                <option value={Sport.ESPORTS}>Esports</option>
+                <option value={Sport.HOCKEY}>Hockey</option>
+                <option value={Sport.VOLLEYBALL}>Volleyball</option>
+                <option value={Sport.BASEBALL}>Baseball</option>
+                <option value={Sport.AMERICAN_FOOTBALL}>American Football</option>
+                <option value={Sport.OTHER}>Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="platform" className="block text-sm font-medium text-neutral-700">
+                Betting Platform
+              </label>
+              <select
+                id="platform"
+                className="mt-1 block w-full border border-neutral-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                value={formData.platform || ''}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    platform: e.target.value || undefined,
+                  })
+                }
+              >
+                <option value="">Select a platform</option>
+                {PLATFORMS.map((platform) => (
+                  <option key={platform} value={platform}>
+                    {platform}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="sm:col-span-2">
+              <label htmlFor="betLink" className="block text-sm font-medium text-neutral-700">
+                Bet Link (Optional)
+              </label>
+              <input
+                type="url"
+                id="betLink"
+                className="mt-1 block w-full border border-neutral-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                placeholder="https://example.com/bet/..."
+                value={formData.betLink || ''}
+                onChange={(e) =>
+                  setFormData({ ...formData, betLink: e.target.value || undefined })
+                }
+              />
+              <p className="mt-1 text-xs text-neutral-500">
+                Direct link for subscribers to quickly place this bet
               </p>
             </div>
 
