@@ -68,10 +68,8 @@ export const tipApi = {
   /**
    * Mark a tip result (requires auth, owner only)
    */
-  async markTipResult(id: string, result: TipResult): Promise<Tip> {
-    const response = await apiClient.patch<Tip>(`/tips/${id}/result`, {
-      result,
-    });
+  async markTipResult(id: string, data: MarkTipResultDto): Promise<Tip> {
+    const response = await apiClient.patch<Tip>(`/tips/${id}/result`, data);
     return response.data;
   },
 };
