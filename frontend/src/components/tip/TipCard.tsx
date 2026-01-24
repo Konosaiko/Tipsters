@@ -1,9 +1,30 @@
 import { Link } from 'react-router-dom';
-import { TipWithTipster, TipResult } from '../../types/tip.types';
+import { TipWithTipster, TipResult, Sport } from '../../types/tip.types';
 
 interface TipCardProps {
   tip: TipWithTipster;
 }
+
+/**
+ * Helper to format sport name for display
+ */
+const formatSport = (sport: Sport): string => {
+  const sportNames: Record<Sport, string> = {
+    [Sport.FOOTBALL]: 'Football',
+    [Sport.BASKETBALL]: 'Basketball',
+    [Sport.TENNIS]: 'Tennis',
+    [Sport.RUGBY]: 'Rugby',
+    [Sport.MMA]: 'MMA',
+    [Sport.BOXING]: 'Boxing',
+    [Sport.ESPORTS]: 'Esports',
+    [Sport.HOCKEY]: 'Hockey',
+    [Sport.VOLLEYBALL]: 'Volleyball',
+    [Sport.BASEBALL]: 'Baseball',
+    [Sport.AMERICAN_FOOTBALL]: 'American Football',
+    [Sport.OTHER]: 'Other',
+  };
+  return sportNames[sport] || sport;
+};
 
 /**
  * Card component to display a single tip in the feed
@@ -60,6 +81,34 @@ export const TipCard = ({ tip }: TipCardProps) => {
         </p>
         {tip.explanation && (
           <p className="text-neutral-600 text-sm mb-3">{tip.explanation}</p>
+        )}
+
+        {/* Sport & Platform Tags */}
+        <div className="flex flex-wrap gap-2 mt-3">
+          {tip.sport && (
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+              {formatSport(tip.sport)}
+            </span>
+          )}
+          {tip.platform && (
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent-100 text-accent-800">
+              {tip.platform}
+            </span>
+          )}
+        </div>
+
+        {/* Bet Link Button */}
+        {tip.betLink && (
+          <div className="mt-3">
+            <a
+              href={tip.betLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-success-600 hover:bg-success-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-success-500"
+            >
+              Quick Bet →
+            </a>
+          </div>
         )}
       </div>
 

@@ -9,6 +9,18 @@ import {
 } from '../types/tip.types';
 
 /**
+ * Helper function to validate URL format
+ */
+function isValidUrl(url: string): boolean {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Tip Service
  *
  * Contains all business logic related to tips.
@@ -43,6 +55,11 @@ export class TipService {
       throw new Error('Stake must be greater than 0');
     }
 
+    // Validate betLink if provided (must be a valid URL)
+    if (data.betLink && !isValidUrl(data.betLink)) {
+      throw new Error('Bet link must be a valid URL');
+    }
+
     // Create the tip
     const tip = await db.tip.create({
       data: {
@@ -52,6 +69,9 @@ export class TipService {
         odds: data.odds,
         explanation: data.explanation,
         stake: data.stake ?? 1, // Default to 1 unit if not provided
+        sport: data.sport,
+        platform: data.platform,
+        betLink: data.betLink,
       },
     });
 
@@ -195,6 +215,11 @@ export class TipService {
       throw new Error('Stake must be greater than 0');
     }
 
+    // Validate betLink if provided (must be a valid URL)
+    if (data.betLink && !isValidUrl(data.betLink)) {
+      throw new Error('Bet link must be a valid URL');
+    }
+
     // Update the tip
     const updatedTip = await db.tip.update({
       where: { id: tipId },
@@ -204,6 +229,9 @@ export class TipService {
         odds: data.odds,
         explanation: data.explanation,
         stake: data.stake,
+        sport: data.sport,
+        platform: data.platform,
+        betLink: data.betLink,
       },
     });
 

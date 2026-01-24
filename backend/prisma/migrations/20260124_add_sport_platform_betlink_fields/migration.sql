@@ -1,0 +1,7 @@
+-- CreateEnum
+CREATE TYPE "Sport" AS ENUM ('FOOTBALL', 'BASKETBALL', 'TENNIS', 'RUGBY', 'MMA', 'BOXING', 'ESPORTS', 'HOCKEY', 'VOLLEYBALL', 'BASEBALL', 'AMERICAN_FOOTBALL', 'OTHER');
+
+-- AlterTable
+ALTER TABLE "Tip" ADD COLUMN     "sport" "Sport",
+ADD COLUMN     "platform" TEXT,
+ADD COLUMN     "betLink" TEXT;

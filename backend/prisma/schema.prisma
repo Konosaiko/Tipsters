@@ -46,6 +46,9 @@ model Tip {
   prediction  String
   odds        Float
   explanation String?
+  sport       Sport?     // Sport category for filtering
+  platform    String?    // Betting platform (Betclic, Winamax, etc.)
+  betLink     String?    // Direct link to place the bet
   result      TipResult? // null = pending, set when tipster marks result
   settledAt   DateTime?  // when result was marked by tipster
   stake       Float      @default(1) // always 1 unit, hidden from public
@@ -70,4 +73,19 @@ enum TipResult {
   WON
   LOST
   VOID
+}
+
+enum Sport {
+  FOOTBALL
+  BASKETBALL
+  TENNIS
+  RUGBY
+  MMA
+  BOXING
+  ESPORTS
+  HOCKEY
+  VOLLEYBALL
+  BASEBALL
+  AMERICAN_FOOTBALL
+  OTHER
 }
