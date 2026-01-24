@@ -1,8 +1,13 @@
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import { TipWithTipster, TipResult, Sport } from '../../types/tip.types';
+import { tipApi } from '../../api/tip.api';
 
 interface TipCardProps {
   tip: TipWithTipster;
+  onUpdate?: () => void;
+  onDelete?: () => void;
+  onResultMarked?: () => void;
 }
 
 /**
@@ -29,7 +34,38 @@ const formatSport = (sport: Sport): string => {
 /**
  * Card component to display a single tip in the feed
  */
-export const TipCard = ({ tip }: TipCardProps) => {
+export const TipCard = ({ tip, onUpdate, onDelete, onResultMarked }: TipCardProps) => {
+  const [isMarkingResult, setIsMarkingResult] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleMarkResult = async (result: TipResult) => {
+    try {
+      await tipApi.markTipResult(tip.id, { result });
+      setIsMarkingResult(false);
+      onResultMarked?.();
+    } catch (err) {
+      console.error('Failed to mark result:', err);
+      alert('Failed to mark result. Please try again.');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete this tip?')) {
+      return;
+    }
+
+    try {
+      setIsDeleting(true);
+      await tipApi.deleteTip(tip.id);
+      onDelete?.();
+    } catch (err) {
+      console.error('Failed to delete tip:', err);
+      alert('Failed to delete tip. Please try again.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const getResultBadge = () => {
     if (!tip.result) {
       return (
@@ -140,6 +176,65 @@ export const TipCard = ({ tip }: TipCardProps) => {
           })}
         </p>
       </div>
+
+      {/* Owner Actions - Only show if callbacks provided */}
+      {(onResultMarked || onDelete) && (
+        <div className="mt-4 pt-4 border-t border-neutral-200">
+          <div className="flex flex-wrap gap-2">
+            {/* Mark Result - Only if tip not already settled */}
+            {onResultMarked && !tip.result && (
+              <>
+                {!isMarkingResult ? (
+                  <button
+                    onClick={() => setIsMarkingResult(true)}
+                    className="px-3 py-1.5 text-xs font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  >
+                    Mark Result
+                  </button>
+                ) : (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleMarkResult(TipResult.WON)}
+                      className="px-3 py-1.5 text-xs font-medium text-white bg-success-600 rounded-md hover:bg-success-700"
+                    >
+                      Won
+                    </button>
+                    <button
+                      onClick={() => handleMarkResult(TipResult.LOST)}
+                      className="px-3 py-1.5 text-xs font-medium text-white bg-red-600 rounded-md hover:bg-red-700"
+                    >
+                      Lost
+                    </button>
+                    <button
+                      onClick={() => handleMarkResult(TipResult.VOID)}
+                      className="px-3 py-1.5 text-xs font-medium text-white bg-neutral-600 rounded-md hover:bg-neutral-700"
+                    >
+                      Void
+                    </button>
+                    <button
+                      onClick={() => setIsMarkingResult(false)}
+                      className="px-3 py-1.5 text-xs font-medium text-neutral-700 bg-neutral-100 rounded-md hover:bg-neutral-200"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Delete Button */}
+            {onDelete && (
+              <button
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="px-3 py-1.5 text-xs font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50"
+              >
+                {isDeleting ? 'Deleting...' : 'Delete'}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
