@@ -9,6 +9,8 @@ node_modules/
 # Build output
 dist/
 build/
+backend/src/**/*.js
+backend/prisma/**/*.js
 
 # Prisma generated files
 **/src/generated/prisma
