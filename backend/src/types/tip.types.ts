@@ -1,3 +1,5 @@
+import { TipVisibility } from './subscription.types';
+
 /**
  * Tip result enum
  */
@@ -6,6 +8,9 @@ export enum TipResult {
   LOST = 'LOST',
   VOID = 'VOID',
 }
+
+// Re-export TipVisibility for convenience
+export { TipVisibility };
 
 /**
  * Sport category enum
@@ -38,6 +43,7 @@ export interface CreateTipDto {
   sport?: Sport; // Sport category for filtering
   platform?: string; // Betting platform (e.g., Betclic, Winamax)
   betLink?: string; // Direct link to place the bet
+  visibility?: TipVisibility; // FREE or PREMIUM, defaults to FREE
 }
 
 /**
@@ -52,6 +58,7 @@ export interface UpdateTipDto {
   sport?: Sport; // Sport category for filtering
   platform?: string; // Betting platform (e.g., Betclic, Winamax)
   betLink?: string; // Direct link to place the bet
+  visibility?: TipVisibility; // FREE or PREMIUM
 }
 
 /**
@@ -74,11 +81,13 @@ export interface TipResponse {
   sport: Sport | null;
   platform: string | null;
   betLink: string | null;
+  visibility: TipVisibility;
   result: TipResult | null;
   settledAt: Date | null;
   stake: number;
   createdAt: Date;
   updatedAt: Date;
+  isLocked?: boolean; // Added by access control for premium tips
 }
 
 /**

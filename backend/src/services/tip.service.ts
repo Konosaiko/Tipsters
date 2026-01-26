@@ -72,6 +72,7 @@ export class TipService {
         sport: data.sport,
         platform: data.platform,
         betLink: data.betLink,
+        visibility: data.visibility ?? 'FREE', // Default to FREE
       },
     });
 
@@ -232,6 +233,7 @@ export class TipService {
         sport: data.sport,
         platform: data.platform,
         betLink: data.betLink,
+        visibility: data.visibility,
       },
     });
 

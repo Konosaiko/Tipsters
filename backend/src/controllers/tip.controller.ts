@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { tipService } from '../services/tip.service';
+import { accessService } from '../services/access.service';
 import { CreateTipDto, UpdateTipDto, MarkTipResultDto } from '../types/tip.types';
 import { AuthRequest } from '../middleware/auth.middleware';
 
@@ -57,12 +58,17 @@ export class TipController {
 
   /**
    * GET /api/tips
-   * Get all tips
+   * Get all tips (premium tips are locked for non-subscribers)
    */
   async getAllTips(req: Request, res: Response): Promise<void> {
     try {
+      const userId = (req as any).user?.userId || null;
       const tips = await tipService.getAllTips();
-      res.status(200).json(tips);
+
+      // Filter tips based on user access (locks premium content for non-subscribers)
+      const filteredTips = await accessService.filterTipsForUser(userId, tips as any);
+
+      res.status(200).json(filteredTips);
     } catch (error) {
       console.error('Error fetching tips:', error);
       res.status(500).json({ error: 'Internal server error' });
@@ -72,11 +78,12 @@ export class TipController {
   /**
    * GET /api/tips/feed?filter=all|following
    * Get tips feed (with optional filter for followed tipsters)
+   * Premium tips are locked for non-subscribers
    */
   async getTipsFeed(req: Request, res: Response): Promise<void> {
     try {
       const filter = (req.query.filter as 'all' | 'following') || 'all';
-      const userId = (req as any).user?.userId; // From optionalAuth middleware
+      const userId = (req as any).user?.userId || null; // From optionalAuth middleware
 
       // Validate filter parameter
       if (filter !== 'all' && filter !== 'following') {
@@ -91,7 +98,11 @@ export class TipController {
       }
 
       const tips = await tipService.getTipsFeed(userId, filter);
-      res.status(200).json(tips);
+
+      // Filter tips based on user access (locks premium content for non-subscribers)
+      const filteredTips = await accessService.filterTipsForUser(userId, tips as any);
+
+      res.status(200).json(filteredTips);
     } catch (error) {
       console.error('Error fetching tips feed:', error);
       res.status(500).json({ error: 'Internal server error' });
@@ -100,14 +111,32 @@ export class TipController {
 
   /**
    * GET /api/tips/:id
-   * Get a single tip by ID
+   * Get a single tip by ID (premium tips require subscription)
    */
   async getTipById(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
+      const userId = (req as any).user?.userId || null;
 
       const tip = await tipService.getTipById(id);
-      res.status(200).json(tip);
+
+      // Check access for premium tips
+      const access = await accessService.canViewTip(userId, id);
+
+      if (!access.canView) {
+        // Return tip with locked content
+        res.status(200).json({
+          ...tip,
+          prediction: '🔒 Premium tip - Subscribe to view',
+          explanation: null,
+          odds: 0,
+          isLocked: true,
+          lockReason: access.reason,
+        });
+        return;
+      }
+
+      res.status(200).json({ ...tip, isLocked: false });
     } catch (error) {
       if (error instanceof Error && error.message.includes('not found')) {
         res.status(404).json({ error: error.message });
