@@ -9,6 +9,9 @@ import { statsApi } from '../api/stats.api';
 import { Tipster } from '../types/tipster.types';
 import { TipsterStats, PeriodFilter } from '../types/stats.types';
 import { StatsPanel } from '../components/stats/StatsPanel';
+import { StripeOnboarding } from '../components/StripeOnboarding';
+import { ManageOffers } from '../components/ManageOffers';
+import { MySubscriptions } from '../components/MySubscriptions';
 
 export const DashboardPage = () => {
   const { user } = useAuth();
@@ -145,6 +148,10 @@ export const DashboardPage = () => {
                 )}
               </div>
 
+              {/* Stripe Connect & Subscriptions */}
+              <StripeOnboarding />
+              <ManageOffers />
+
               {stats && (
                 <StatsPanel
                   stats={stats}
@@ -159,6 +166,12 @@ export const DashboardPage = () => {
               <MyTips key={refreshKey} onResultMarked={handleTipResultMarked} />
             </>
           )}
+
+          {/* User Subscriptions Section */}
+          <div className="mt-12 pt-8 border-t border-gray-200">
+            <h2 className="text-2xl font-bold text-neutral-900 mb-6">My Subscriptions</h2>
+            <MySubscriptions />
+          </div>
         </div>
       </div>
     </Layout>

@@ -1,6 +1,6 @@
 import { useState, FormEvent } from 'react';
 import { tipApi } from '../../api/tip.api';
-import { CreateTipDto, Sport } from '../../types/tip.types';
+import { CreateTipDto, Sport, TipVisibility } from '../../types/tip.types';
 
 interface CreateTipFormProps {
   onSuccess: () => void;
@@ -27,6 +27,7 @@ export const CreateTipForm = ({ onSuccess }: CreateTipFormProps) => {
     sport: undefined,
     platform: undefined,
     betLink: undefined,
+    visibility: TipVisibility.FREE, // Default to free
   });
 
   const [error, setError] = useState<string>('');
@@ -49,6 +50,7 @@ export const CreateTipForm = ({ onSuccess }: CreateTipFormProps) => {
         sport: undefined,
         platform: undefined,
         betLink: undefined,
+        visibility: TipVisibility.FREE,
       });
       onSuccess();
     } catch (err: any) {
@@ -217,6 +219,38 @@ export const CreateTipForm = ({ onSuccess }: CreateTipFormProps) => {
               <p className="mt-1 text-xs text-neutral-500">
                 Direct link for subscribers to quickly place this bet
               </p>
+            </div>
+
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-neutral-700 mb-2">
+                Visibility
+              </label>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="visibility"
+                    value={TipVisibility.FREE}
+                    checked={formData.visibility === TipVisibility.FREE}
+                    onChange={() => setFormData({ ...formData, visibility: TipVisibility.FREE })}
+                    className="text-primary-600 focus:ring-primary-500"
+                  />
+                  <span className="text-sm">Free</span>
+                  <span className="text-xs text-neutral-500">- Visible to everyone</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="visibility"
+                    value={TipVisibility.PREMIUM}
+                    checked={formData.visibility === TipVisibility.PREMIUM}
+                    onChange={() => setFormData({ ...formData, visibility: TipVisibility.PREMIUM })}
+                    className="text-primary-600 focus:ring-primary-500"
+                  />
+                  <span className="text-sm">Premium</span>
+                  <span className="text-xs text-neutral-500">- Subscribers only</span>
+                </label>
+              </div>
             </div>
 
             <div className="sm:col-span-2">

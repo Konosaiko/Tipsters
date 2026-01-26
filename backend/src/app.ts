@@ -5,6 +5,10 @@ import tipsterRoutes from './routes/tipster.routes';
 import tipRoutes from './routes/tip.routes';
 import statsRoutes from './routes/stats.routes';
 import followRoutes from './routes/follow.routes';
+import stripeRoutes from './routes/stripe.routes';
+import offerRoutes from './routes/offer.routes';
+import subscriptionRoutes from './routes/subscription.routes';
+import { handleStripeWebhook } from './webhooks/stripe.webhook';
 
 const app = express();
 
@@ -16,6 +20,14 @@ app.use(
   })
 );
 
+// Stripe webhook needs raw body - must be before express.json()
+app.post(
+  '/api/webhooks/stripe',
+  express.raw({ type: 'application/json' }),
+  handleStripeWebhook
+);
+
+// JSON parsing for all other routes
 app.use(express.json());
 
 // Health check endpoint
@@ -29,5 +41,8 @@ app.use('/api/tipsters', tipsterRoutes);
 app.use('/api/tips', tipRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/follow', followRoutes);
+app.use('/api/stripe', stripeRoutes);
+app.use('/api/offers', offerRoutes);
+app.use('/api/subscriptions', subscriptionRoutes);
 
 export default app;

@@ -8,6 +8,14 @@ export enum TipResult {
 }
 
 /**
+ * Tip visibility enum
+ */
+export enum TipVisibility {
+  FREE = 'FREE',
+  PREMIUM = 'PREMIUM',
+}
+
+/**
  * Sport category enum
  */
 export enum Sport {
@@ -38,6 +46,7 @@ export interface CreateTipDto {
   sport?: Sport; // Sport category for filtering
   platform?: string; // Betting platform (e.g., Betclic, Winamax)
   betLink?: string; // Direct link to place the bet
+  visibility?: TipVisibility; // FREE or PREMIUM
 }
 
 /**
@@ -52,6 +61,7 @@ export interface UpdateTipDto {
   sport?: Sport; // Sport category for filtering
   platform?: string; // Betting platform (e.g., Betclic, Winamax)
   betLink?: string; // Direct link to place the bet
+  visibility?: TipVisibility; // FREE or PREMIUM
 }
 
 /**
@@ -74,11 +84,13 @@ export interface Tip {
   sport: Sport | null;
   platform: string | null;
   betLink: string | null;
+  visibility: TipVisibility;
   result: TipResult | null;
   settledAt: string | null;
   stake: number;
   createdAt: string;
   updatedAt: string;
+  isLocked?: boolean; // True if premium and user doesn't have access
 }
 
 /**
