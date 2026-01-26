@@ -9,6 +9,7 @@ import { PublicTipCard } from '../components/tip/PublicTipCard';
 import { StatsPanel } from '../components/stats/StatsPanel';
 import { TipResultBadge } from '../components/tip/TipResultBadge';
 import { FollowButton } from '../components/follow/FollowButton';
+import { useAuth } from '../context/AuthContext';
 
 /**
  * Page displaying a single tipster's profile and all their tips
@@ -16,6 +17,7 @@ import { FollowButton } from '../components/follow/FollowButton';
  */
 export const TipsterDetailPage = () => {
   const { id } = useParams<{ id: string }>();
+  const { user } = useAuth();
   const [tipster, setTipster] = useState<TipsterWithDetails | null>(null);
   const [stats, setStats] = useState<TipsterStats | null>(null);
   const [period, setPeriod] = useState<PeriodFilter>('all');
@@ -87,6 +89,7 @@ export const TipsterDetailPage = () => {
 
   const tipCount = tipster?.tips?.length ?? 0;
   const followerCount = tipster?.followerCount ?? 0;
+  const isOwnProfile = user?.id === tipster?.userId;
 
   return (
     <Layout>
@@ -131,12 +134,14 @@ export const TipsterDetailPage = () => {
               <p className="text-neutral-700 leading-relaxed">{tipster.bio}</p>
             )}
           </div>
-          <FollowButton
-            tipsterId={tipster.id}
-            isFollowing={tipster.isFollowing ?? false}
-            onFollowChange={handleFollowChange}
-            size="md"
-          />
+          {!isOwnProfile && (
+            <FollowButton
+              tipsterId={tipster.id}
+              isFollowing={tipster.isFollowing ?? false}
+              onFollowChange={handleFollowChange}
+              size="md"
+            />
+          )}
         </div>
 
         <div className="mt-6 pt-6 border-t border-neutral-200">
