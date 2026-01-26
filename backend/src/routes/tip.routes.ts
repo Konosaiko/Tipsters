@@ -15,11 +15,11 @@ router.post('/', authenticate, (req, res) => tipController.createTip(req, res));
 // GET /api/tips/feed?filter=all|following - Get tips feed (public, but reads auth if present)
 router.get('/feed', optionalAuth, (req, res) => tipController.getTipsFeed(req, res));
 
-// GET /api/tips - Get all tips (public)
-router.get('/', (req, res) => tipController.getAllTips(req, res));
+// GET /api/tips - Get all tips (public, but reads auth for premium access)
+router.get('/', optionalAuth, (req, res) => tipController.getAllTips(req, res));
 
-// GET /api/tips/:id - Get a single tip by ID (public)
-router.get('/:id', (req, res) => tipController.getTipById(req, res));
+// GET /api/tips/:id - Get a single tip by ID (public, but reads auth for premium access)
+router.get('/:id', optionalAuth, (req, res) => tipController.getTipById(req, res));
 
 // PATCH /api/tips/:id - Update a tip (protected - owner only)
 router.patch('/:id', authenticate, (req, res) => tipController.updateTip(req, res));

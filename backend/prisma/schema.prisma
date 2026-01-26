@@ -15,45 +15,50 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  username  String    @unique
-  email     String    @unique
-  password  String    // Hashed password
-  birthDate DateTime
-  tipster   Tipster?  // One-to-one: a user can have one tipster profile
-  follows   Follow[]  // Tipsters this user follows
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id            String         @id @default(uuid())
+  username      String         @unique
+  email         String         @unique
+  password      String         // Hashed password
+  birthDate     DateTime
+  tipster       Tipster?       // One-to-one: a user can have one tipster profile
+  follows       Follow[]       // Tipsters this user follows
+  subscriptions Subscription[] // Subscriptions to tipsters
+  stripeCustomerId String?     @unique // Stripe customer ID for payments
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 model Tipster {
-  id          String   @id @default(uuid())
-  userId      String   @unique
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  displayName String
-  bio         String?
-  tips        Tip[]
-  followers   Follow[] // Users who follow this tipster
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                 String                @id @default(uuid())
+  userId             String                @unique
+  user               User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  displayName        String
+  bio                String?
+  tips               Tip[]
+  followers          Follow[]              // Users who follow this tipster
+  subscriptionOffers SubscriptionOffer[]   // Subscription offers created by this tipster
+  stripeAccount      TipsterStripeAccount? // Stripe Connect account
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
 }
 
 model Tip {
-  id          String     @id @default(uuid())
+  id          String        @id @default(uuid())
   tipsterId   String
-  tipster     Tipster    @relation(fields: [tipsterId], references: [id], onDelete: Cascade)
+  tipster     Tipster       @relation(fields: [tipsterId], references: [id], onDelete: Cascade)
   event       String
   prediction  String
   odds        Float
   explanation String?
-  sport       Sport?     // Sport category for filtering
-  platform    String?    // Betting platform (Betclic, Winamax, etc.)
-  betLink     String?    // Direct link to place the bet
-  result      TipResult? // null = pending, set when tipster marks result
-  settledAt   DateTime?  // when result was marked by tipster
-  stake       Float      @default(1) // always 1 unit, hidden from public
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  sport       Sport?        // Sport category for filtering
+  platform    String?       // Betting platform (Betclic, Winamax, etc.)
+  betLink     String?       // Direct link to place the bet
+  visibility  TipVisibility @default(FREE) // FREE or PREMIUM
+  result      TipResult?    // null = pending, set when tipster marks result
+  settledAt   DateTime?     // when result was marked by tipster
+  stake       Float         @default(1) // always 1 unit, hidden from public
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }
 
 model Follow {
@@ -88,4 +93,80 @@ enum Sport {
   BASEBALL
   AMERICAN_FOOTBALL
   OTHER
+}
+
+enum TipVisibility {
+  FREE
+  PREMIUM
+}
+
+enum SubscriptionDuration {
+  WEEKLY
+  MONTHLY
+  YEARLY
+  LIFETIME
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  PAST_DUE
+  TRIALING
+}
+
+// Stripe Connect account for tipsters to receive payments
+model TipsterStripeAccount {
+  id                 String   @id @default(uuid())
+  tipsterId          String   @unique
+  tipster            Tipster  @relation(fields: [tipsterId], references: [id], onDelete: Cascade)
+  stripeAccountId    String   @unique // Stripe Connect account ID (acct_xxx)
+  chargesEnabled     Boolean  @default(false)
+  payoutsEnabled     Boolean  @default(false)
+  onboardingComplete Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+// Subscription offers created by tipsters
+model SubscriptionOffer {
+  id              String               @id @default(uuid())
+  tipsterId       String
+  tipster         Tipster              @relation(fields: [tipsterId], references: [id], onDelete: Cascade)
+  name            String               // "Football Monthly", "All Sports VIP"
+  description     String?
+  price           Int                  // Price in cents (€9.99 = 999)
+  currency        String               @default("eur")
+  duration        SubscriptionDuration
+  sports          Sport[]              // Empty array = all sports access
+  trialDays       Int?                 // null = no trial period
+  isActive        Boolean              @default(true)
+  stripeProductId String?              // Stripe product ID
+  stripePriceId   String?              // Stripe price ID
+  subscriptions   Subscription[]
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+
+  @@index([tipsterId])
+}
+
+// User subscriptions to tipster offers
+model Subscription {
+  id                   String             @id @default(uuid())
+  userId               String
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  offerId              String
+  offer                SubscriptionOffer  @relation(fields: [offerId], references: [id])
+  status               SubscriptionStatus @default(ACTIVE)
+  currentPeriodStart   DateTime           @default(now())
+  currentPeriodEnd     DateTime?          // null for lifetime subscriptions
+  trialEndsAt          DateTime?          // null if no trial
+  cancelAtPeriodEnd    Boolean            @default(false) // Will cancel at period end
+  stripeSubscriptionId String?            @unique // Stripe subscription ID
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  @@unique([userId, offerId]) // User can only have one subscription per offer
+  @@index([userId])
+  @@index([offerId])
 }

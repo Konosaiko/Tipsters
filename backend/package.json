@@ -18,7 +18,8 @@
     "dotenv": "^17.2.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.3",
-    "prisma": "^5.22.0"
+    "prisma": "^5.22.0",
+    "stripe": "^20.2.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
