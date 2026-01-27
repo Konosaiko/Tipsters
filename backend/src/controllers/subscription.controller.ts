@@ -167,7 +167,7 @@ export class SubscriptionController {
    */
   async getTipsterAccess(req: Request, res: Response): Promise<void> {
     try {
-      const { tipsterId } = req.params;
+      const { id: tipsterId } = req.params;
       const userId = (req as any).user?.userId || null;
 
       const accessSummary = await accessService.getTipsterAccessSummary(
