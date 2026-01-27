@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { Layout } from '../components/layout/Layout';
 import { tipsterApi } from '../api/tipster.api';
 import { statsApi } from '../api/stats.api';
@@ -7,9 +7,11 @@ import { TipsterWithDetails } from '../types/tipster.types';
 import { TipsterStats, PeriodFilter } from '../types/stats.types';
 import { PublicTipCard } from '../components/tip/PublicTipCard';
 import { StatsPanel } from '../components/stats/StatsPanel';
-import { TipResultBadge } from '../components/tip/TipResultBadge';
 import { FollowButton } from '../components/follow/FollowButton';
 import { useAuth } from '../context/AuthContext';
+import { getTipsterAccess, TipsterAccessSummary } from '../api/subscription.api';
+import { SubscriptionOffer, formatPrice, getDurationText } from '../api/offer.api';
+import { SubscribeButton } from '../components/SubscribeButton';
 
 /**
  * Page displaying a single tipster's profile and all their tips
@@ -17,13 +19,26 @@ import { useAuth } from '../context/AuthContext';
  */
 export const TipsterDetailPage = () => {
   const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const [tipster, setTipster] = useState<TipsterWithDetails | null>(null);
   const [stats, setStats] = useState<TipsterStats | null>(null);
+  const [accessInfo, setAccessInfo] = useState<TipsterAccessSummary | null>(null);
   const [period, setPeriod] = useState<PeriodFilter>('all');
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingStats, setIsLoadingStats] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [subscriptionMessage, setSubscriptionMessage] = useState<string | null>(null);
+
+  // Check for subscription success/cancel message from Stripe redirect
+  useEffect(() => {
+    const subscriptionStatus = searchParams.get('subscription');
+    if (subscriptionStatus === 'success') {
+      setSubscriptionMessage('Subscription successful! You now have access to premium tips.');
+    } else if (subscriptionStatus === 'cancelled') {
+      setSubscriptionMessage('Subscription was cancelled.');
+    }
+  }, [searchParams]);
 
   // Fetch tipster profile
   useEffect(() => {
@@ -50,6 +65,22 @@ export const TipsterDetailPage = () => {
 
     fetchTipster();
   }, [id]);
+
+  // Fetch subscription/access info
+  useEffect(() => {
+    const fetchAccessInfo = async () => {
+      if (!id) return;
+
+      try {
+        const data = await getTipsterAccess(id);
+        setAccessInfo(data);
+      } catch (err) {
+        console.error('Failed to load access info:', err);
+      }
+    };
+
+    fetchAccessInfo();
+  }, [id, user]);
 
   // Fetch tipster stats
   useEffect(() => {
@@ -165,6 +196,23 @@ export const TipsterDetailPage = () => {
         </div>
       </div>
 
+      {/* Subscription Message */}
+      {subscriptionMessage && (
+        <div className={`mb-6 p-4 rounded-lg ${
+          subscriptionMessage.includes('successful')
+            ? 'bg-green-50 border border-green-200 text-green-700'
+            : 'bg-yellow-50 border border-yellow-200 text-yellow-700'
+        }`}>
+          {subscriptionMessage}
+          <button
+            onClick={() => setSubscriptionMessage(null)}
+            className="ml-2 underline text-sm"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
       {/* Stats Panel */}
       {stats && (
         <div className="mb-8">
@@ -174,6 +222,79 @@ export const TipsterDetailPage = () => {
             onPeriodChange={handlePeriodChange}
             isLoading={isLoadingStats}
           />
+        </div>
+      )}
+
+      {/* Subscription Offers Section */}
+      {!isOwnProfile && accessInfo && accessInfo.availableOffers.length > 0 && (
+        <div className="mb-8 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border border-indigo-200 p-6">
+          <h2 className="text-xl font-bold text-neutral-900 mb-2">
+            {accessInfo.hasAccess ? 'Your Subscription' : 'Subscribe for Premium Tips'}
+          </h2>
+
+          {accessInfo.hasAccess && accessInfo.activeSubscription ? (
+            <div className="bg-white rounded-lg p-4 border border-green-200">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="inline-block w-3 h-3 bg-green-500 rounded-full"></span>
+                <span className="font-medium text-green-700">Active Subscription</span>
+              </div>
+              <p className="text-gray-600">
+                Plan: <span className="font-medium">{accessInfo.activeSubscription.offerName}</span>
+              </p>
+              {accessInfo.activeSubscription.expiresAt && (
+                <p className="text-sm text-gray-500">
+                  {accessInfo.activeSubscription.cancelAtPeriodEnd ? 'Ends' : 'Renews'}:{' '}
+                  {new Date(accessInfo.activeSubscription.expiresAt).toLocaleDateString()}
+                </p>
+              )}
+              <p className="mt-2 text-sm text-green-600">
+                You have access to all premium tips from this tipster.
+              </p>
+            </div>
+          ) : (
+            <>
+              <p className="text-neutral-600 mb-4">
+                Get access to {accessInfo.tipCounts.premium} premium tips and all future premium content.
+              </p>
+
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {accessInfo.availableOffers.map((offer: SubscriptionOffer) => (
+                  <div key={offer.id} className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+                    <h3 className="font-semibold text-lg mb-1">{offer.name}</h3>
+                    {offer.description && (
+                      <p className="text-sm text-gray-600 mb-3">{offer.description}</p>
+                    )}
+                    <div className="mb-3">
+                      <span className="text-2xl font-bold text-indigo-600">
+                        {formatPrice(offer.price, offer.currency)}
+                      </span>
+                      <span className="text-gray-500 text-sm ml-1">
+                        {getDurationText(offer.duration)}
+                      </span>
+                    </div>
+                    {offer.trialDays && (
+                      <p className="text-sm text-blue-600 mb-3">
+                        {offer.trialDays} days free trial
+                      </p>
+                    )}
+                    <div className="text-xs text-gray-500 mb-3">
+                      {offer.sports.length === 0
+                        ? 'All sports included'
+                        : `Sports: ${offer.sports.join(', ')}`}
+                    </div>
+                    <SubscribeButton offer={offer} className="w-full" />
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Premium Tips Info for non-subscribers */}
+      {!isOwnProfile && accessInfo && !accessInfo.hasAccess && accessInfo.tipCounts.premium > 0 && (
+        <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg text-sm text-purple-700">
+          This tipster has {accessInfo.tipCounts.premium} premium tips. Subscribe above to unlock them.
         </div>
       )}
 
