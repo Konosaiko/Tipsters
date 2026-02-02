@@ -1,47 +1,73 @@
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
 export const Navbar = () => {
   const { isAuthenticated, user, logout } = useAuth();
 
   return (
-    <nav className="bg-neutral-50 shadow">
+    <nav className="bg-neutral-900 border-b border-neutral-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          <div className="flex">
-            <Link to="/" className="flex items-center">
-              <span className="text-xl font-bold text-primary-500">TipsterPro</span>
+          <div className="flex items-center">
+            <Link to="/" className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center">
+                <span className="text-neutral-950 font-bold text-sm">T</span>
+              </div>
+              <span className="text-xl font-bold text-white">Tipsters</span>
             </Link>
 
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-              <Link
+            <div className="hidden sm:ml-8 sm:flex sm:space-x-1">
+              <NavLink
                 to="/"
-                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-neutral-900 hover:text-primary-600"
+                end
+                className={({ isActive }) =>
+                  `px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    isActive
+                      ? 'bg-neutral-800 text-white'
+                      : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
+                  }`
+                }
               >
                 Feed
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/tipsters"
-                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-neutral-600 hover:text-primary-600"
+                className={({ isActive }) =>
+                  `px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    isActive
+                      ? 'bg-neutral-800 text-white'
+                      : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
+                  }`
+                }
               >
                 Tipsters
-              </Link>
+              </NavLink>
+              {isAuthenticated && (
+                <NavLink
+                  to="/dashboard"
+                  className={({ isActive }) =>
+                    `px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      isActive
+                        ? 'bg-primary-500/10 text-primary-500'
+                        : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
+                    }`
+                  }
+                >
+                  Dashboard
+                </NavLink>
+              )}
             </div>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3">
             {isAuthenticated ? (
               <>
-                <Link
-                  to="/dashboard"
-                  className="text-neutral-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  Dashboard
-                </Link>
-                <span className="text-sm text-neutral-600">Hi, {user?.username}</span>
+                <span className="text-sm text-neutral-400">
+                  Hi, <span className="text-white font-medium">{user?.username}</span>
+                </span>
                 <button
                   onClick={logout}
-                  className="text-neutral-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
+                  className="text-neutral-400 hover:text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-neutral-800 transition-colors"
                 >
                   Logout
                 </button>
@@ -50,13 +76,13 @@ export const Navbar = () => {
               <>
                 <Link
                   to="/login"
-                  className="text-neutral-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
+                  className="text-neutral-400 hover:text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-neutral-800 transition-colors"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-md text-sm font-medium"
+                  className="bg-primary-500 hover:bg-primary-400 text-neutral-950 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                 >
                   Sign up
                 </Link>

@@ -139,16 +139,16 @@ export const TipsterDetailPage = () => {
     <Layout>
       {isLoading ? (
         <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-neutral-600">Loading tipster...</div>
+          <div className="text-neutral-400">Loading tipster...</div>
         </div>
       ) : error || !tipster ? (
         <div className="max-w-4xl mx-auto px-4 py-8">
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+          <div className="bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded">
             {error || 'Tipster not found'}
           </div>
           <Link
             to="/tipsters"
-            className="mt-4 inline-block text-primary-600 hover:text-primary-800"
+            className="mt-4 inline-block text-primary-500 hover:text-primary-400"
           >
             ← Back to all tipsters
           </Link>
@@ -158,24 +158,24 @@ export const TipsterDetailPage = () => {
       {/* Back link */}
       <Link
         to="/tipsters"
-        className="inline-flex items-center text-primary-600 hover:text-primary-800 mb-6"
+        className="inline-flex items-center text-primary-500 hover:text-primary-400 mb-6"
       >
         ← Back to all tipsters
       </Link>
 
       {/* Tipster Profile Card */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8 border border-neutral-200">
+      <div className="bg-neutral-900 rounded-lg p-6 mb-8 border border-neutral-800">
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
-            <h1 className="text-3xl font-bold text-neutral-900 mb-2">
+            <h1 className="text-3xl font-bold text-white mb-2">
               {tipster.displayName}
             </h1>
-            <p className="text-neutral-600 mb-2">@{tipster.user.username}</p>
+            <p className="text-neutral-400 mb-2">@{tipster.user.username}</p>
             <p className="text-sm text-neutral-500 mb-4">
               {followerCount} {followerCount === 1 ? 'follower' : 'followers'}
             </p>
             {tipster.bio && (
-              <p className="text-neutral-700 leading-relaxed">{tipster.bio}</p>
+              <p className="text-neutral-300 leading-relaxed">{tipster.bio}</p>
             )}
           </div>
           {!isOwnProfile && (
@@ -188,16 +188,16 @@ export const TipsterDetailPage = () => {
           )}
         </div>
 
-        <div className="mt-6 pt-6 border-t border-neutral-200">
+        <div className="mt-6 pt-6 border-t border-neutral-800">
           <div className="flex items-center gap-6">
             <div>
-              <p className="text-3xl font-bold text-primary-600">{tipCount}</p>
-              <p className="text-sm text-neutral-600">
+              <p className="text-3xl font-bold text-primary-500">{tipCount}</p>
+              <p className="text-sm text-neutral-400">
                 {tipCount === 1 ? 'Tip Published' : 'Tips Published'}
               </p>
             </div>
             <div>
-              <p className="text-sm text-neutral-600">
+              <p className="text-sm text-neutral-400">
                 Member since{' '}
                 {new Date(tipster.createdAt).toLocaleDateString('en-US', {
                   month: 'long',
@@ -213,8 +213,8 @@ export const TipsterDetailPage = () => {
       {subscriptionMessage && (
         <div className={`mb-6 p-4 rounded-lg ${
           subscriptionMessage.includes('successful')
-            ? 'bg-green-50 border border-green-200 text-green-700'
-            : 'bg-yellow-50 border border-yellow-200 text-yellow-700'
+            ? 'bg-green-900/20 border border-green-800 text-green-400'
+            : 'bg-yellow-900/20 border border-yellow-800 text-yellow-400'
         }`}>
           {subscriptionMessage}
           <button
@@ -240,57 +240,57 @@ export const TipsterDetailPage = () => {
 
       {/* Subscription Offers Section */}
       {!isOwnProfile && accessInfo && accessInfo.availableOffers.length > 0 && (
-        <div className="mb-8 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border border-indigo-200 p-6">
-          <h2 className="text-xl font-bold text-neutral-900 mb-2">
+        <div className="mb-8 bg-gradient-to-r from-indigo-900/20 to-purple-900/20 rounded-lg border border-indigo-800/50 p-6">
+          <h2 className="text-xl font-bold text-white mb-2">
             {accessInfo.hasAccess ? 'Your Subscription' : 'Subscribe for Premium Tips'}
           </h2>
 
           {accessInfo.hasAccess && accessInfo.activeSubscription ? (
-            <div className="bg-white rounded-lg p-4 border border-green-200">
+            <div className="bg-neutral-900 rounded-lg p-4 border border-green-800/50">
               <div className="flex items-center gap-2 mb-2">
                 <span className="inline-block w-3 h-3 bg-green-500 rounded-full"></span>
-                <span className="font-medium text-green-700">Active Subscription</span>
+                <span className="font-medium text-green-400">Active Subscription</span>
               </div>
-              <p className="text-gray-600">
+              <p className="text-neutral-300">
                 Plan: <span className="font-medium">{accessInfo.activeSubscription.offerName}</span>
               </p>
               {accessInfo.activeSubscription.expiresAt && (
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-neutral-400">
                   {accessInfo.activeSubscription.cancelAtPeriodEnd ? 'Ends' : 'Renews'}:{' '}
                   {new Date(accessInfo.activeSubscription.expiresAt).toLocaleDateString()}
                 </p>
               )}
-              <p className="mt-2 text-sm text-green-600">
+              <p className="mt-2 text-sm text-green-400">
                 You have access to all premium tips from this tipster.
               </p>
             </div>
           ) : (
             <>
-              <p className="text-neutral-600 mb-4">
+              <p className="text-neutral-400 mb-4">
                 Get access to {accessInfo.tipCounts.premium} premium tips and all future premium content.
               </p>
 
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {accessInfo.availableOffers.map((offer: SubscriptionOffer) => (
-                  <div key={offer.id} className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-                    <h3 className="font-semibold text-lg mb-1">{offer.name}</h3>
+                  <div key={offer.id} className="bg-neutral-900 rounded-lg p-4 border border-neutral-800">
+                    <h3 className="font-semibold text-lg text-white mb-1">{offer.name}</h3>
                     {offer.description && (
-                      <p className="text-sm text-gray-600 mb-3">{offer.description}</p>
+                      <p className="text-sm text-neutral-400 mb-3">{offer.description}</p>
                     )}
                     <div className="mb-3">
-                      <span className="text-2xl font-bold text-indigo-600">
+                      <span className="text-2xl font-bold text-primary-500">
                         {formatPrice(offer.price, offer.currency)}
                       </span>
-                      <span className="text-gray-500 text-sm ml-1">
+                      <span className="text-neutral-400 text-sm ml-1">
                         {getDurationText(offer.duration)}
                       </span>
                     </div>
                     {offer.trialDays && (
-                      <p className="text-sm text-blue-600 mb-3">
+                      <p className="text-sm text-blue-400 mb-3">
                         {offer.trialDays} days free trial
                       </p>
                     )}
-                    <div className="text-xs text-gray-500 mb-3">
+                    <div className="text-xs text-neutral-500 mb-3">
                       {offer.sports.length === 0
                         ? 'All sports included'
                         : `Sports: ${offer.sports.join(', ')}`}
@@ -306,18 +306,18 @@ export const TipsterDetailPage = () => {
 
       {/* Premium Tips Info for non-subscribers */}
       {!isOwnProfile && accessInfo && !accessInfo.hasAccess && accessInfo.tipCounts.premium > 0 && (
-        <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg text-sm text-purple-700">
+        <div className="mb-4 p-3 bg-purple-900/20 border border-purple-800/50 rounded-lg text-sm text-purple-400">
           This tipster has {accessInfo.tipCounts.premium} premium tips. Subscribe above to unlock them.
         </div>
       )}
 
       {/* Tips Section */}
       <div>
-        <h2 className="text-2xl font-bold text-neutral-900 mb-4">Published Tips</h2>
+        <h2 className="text-2xl font-bold text-white mb-4">Published Tips</h2>
 
         {tipCount === 0 ? (
-          <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-8 text-center">
-            <p className="text-neutral-600">This tipster hasn't published any tips yet</p>
+          <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-8 text-center">
+            <p className="text-neutral-400">This tipster hasn't published any tips yet</p>
           </div>
         ) : (
           <div className="space-y-4">

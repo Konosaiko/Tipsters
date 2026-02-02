@@ -69,20 +69,20 @@ export const TipCard = ({ tip, onDelete, onResultMarked }: TipCardProps) => {
   const getResultBadge = () => {
     if (!tip.result) {
       return (
-        <span className="inline-block px-2 py-1 text-xs font-semibold rounded bg-yellow-100 text-yellow-800">
+        <span className="inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-full bg-yellow-500/10 text-yellow-500 border border-yellow-500/20">
           Pending
         </span>
       );
     }
 
-    const colors = {
-      [TipResult.WON]: 'bg-success-100 text-success-800',
-      [TipResult.LOST]: 'bg-red-100 text-red-800',
-      [TipResult.VOID]: 'bg-neutral-100 text-neutral-800',
+    const colors: Record<TipResult, string> = {
+      [TipResult.WON]: 'bg-primary-500/10 text-primary-500 border-primary-500/20',
+      [TipResult.LOST]: 'bg-red-500/10 text-red-500 border-red-500/20',
+      [TipResult.VOID]: 'bg-neutral-500/10 text-neutral-400 border-neutral-500/20',
     };
 
     return (
-      <span className={`inline-block px-2 py-1 text-xs font-semibold rounded ${colors[tip.result]}`}>
+      <span className={`inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-full border ${colors[tip.result]}`}>
         {tip.result}
       </span>
     );
@@ -91,19 +91,19 @@ export const TipCard = ({ tip, onDelete, onResultMarked }: TipCardProps) => {
   const potentialReturn = ((tip.odds - 1) * (tip.stake || 1)).toFixed(2);
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-neutral-200">
+    <div className="bg-neutral-900 rounded-xl p-6 hover:border-neutral-700 transition-colors border border-neutral-800">
       {/* Tipster Info */}
       <div className="flex items-center mb-4">
         <Link
           to={`/tipsters/${tip.tipster.id}`}
-          className="flex items-center hover:underline"
+          className="flex items-center group"
         >
-          <div className="w-10 h-10 rounded-full bg-primary-500 flex items-center justify-center text-white font-bold mr-3">
+          <div className="w-10 h-10 rounded-full bg-primary-500 flex items-center justify-center text-neutral-950 font-bold mr-3">
             {tip.tipster.displayName.charAt(0).toUpperCase()}
           </div>
           <div>
-            <p className="font-semibold text-neutral-900">{tip.tipster.displayName}</p>
-            <p className="text-sm text-neutral-600">@{tip.tipster.user.username}</p>
+            <p className="font-semibold text-white group-hover:text-primary-400 transition-colors">{tip.tipster.displayName}</p>
+            <p className="text-sm text-neutral-500">@{tip.tipster.user.username}</p>
           </div>
         </Link>
         <div className="ml-auto">{getResultBadge()}</div>
@@ -111,23 +111,21 @@ export const TipCard = ({ tip, onDelete, onResultMarked }: TipCardProps) => {
 
       {/* Tip Content */}
       <div className="mb-4">
-        <h3 className="text-lg font-bold text-neutral-900 mb-2">{tip.event}</h3>
-        <p className="text-neutral-700 font-medium mb-2">
-          <span className="text-primary-600">Prediction:</span> {tip.prediction}
-        </p>
+        <h3 className="text-lg font-bold text-white mb-2">{tip.event}</h3>
+        <p className="text-primary-400 font-medium mb-2">{tip.prediction}</p>
         {tip.explanation && (
-          <p className="text-neutral-600 text-sm mb-3">{tip.explanation}</p>
+          <p className="text-neutral-400 text-sm mb-3">{tip.explanation}</p>
         )}
 
         {/* Sport & Platform Tags */}
         <div className="flex flex-wrap gap-2 mt-3">
           {tip.sport && (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-neutral-800 text-neutral-300">
               {formatSport(tip.sport)}
             </span>
           )}
           {tip.platform && (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent-100 text-accent-800">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-neutral-800 text-neutral-300">
               {tip.platform}
             </span>
           )}
@@ -140,32 +138,35 @@ export const TipCard = ({ tip, onDelete, onResultMarked }: TipCardProps) => {
               href={tip.betLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-success-600 hover:bg-success-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-success-500"
+              className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg text-white bg-primary-500 hover:bg-primary-400 transition-colors"
             >
-              Quick Bet →
+              Quick Bet
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
             </a>
           </div>
         )}
       </div>
 
       {/* Odds & Stake */}
-      <div className="grid grid-cols-3 gap-4 p-4 bg-neutral-50 rounded-lg">
+      <div className="grid grid-cols-3 gap-4 p-4 bg-neutral-800/50 rounded-lg">
         <div>
           <p className="text-xs text-neutral-500 uppercase mb-1">Odds</p>
-          <p className="text-lg font-bold text-neutral-900">{tip.odds.toFixed(2)}</p>
+          <p className="text-lg font-bold text-white">{tip.odds.toFixed(2)}</p>
         </div>
         <div>
           <p className="text-xs text-neutral-500 uppercase mb-1">Stake</p>
-          <p className="text-lg font-bold text-neutral-900">{tip.stake} {tip.stake === 1 ? 'unit' : 'units'}</p>
+          <p className="text-lg font-bold text-white">{tip.stake}u</p>
         </div>
         <div>
           <p className="text-xs text-neutral-500 uppercase mb-1">Potential</p>
-          <p className="text-lg font-bold text-success-500">+{potentialReturn}u</p>
+          <p className="text-lg font-bold text-primary-500">+{potentialReturn}u</p>
         </div>
       </div>
 
       {/* Timestamp */}
-      <div className="mt-4 pt-4 border-t border-neutral-200">
+      <div className="mt-4 pt-4 border-t border-neutral-800">
         <p className="text-xs text-neutral-500">
           {new Date(tip.createdAt).toLocaleString('en-US', {
             month: 'short',
@@ -179,7 +180,7 @@ export const TipCard = ({ tip, onDelete, onResultMarked }: TipCardProps) => {
 
       {/* Owner Actions - Only show if callbacks provided */}
       {(onResultMarked || onDelete) && (
-        <div className="mt-4 pt-4 border-t border-neutral-200">
+        <div className="mt-4 pt-4 border-t border-neutral-800">
           <div className="flex flex-wrap gap-2">
             {/* Mark Result - Only if tip not already settled */}
             {onResultMarked && !tip.result && (
@@ -187,7 +188,7 @@ export const TipCard = ({ tip, onDelete, onResultMarked }: TipCardProps) => {
                 {!isMarkingResult ? (
                   <button
                     onClick={() => setIsMarkingResult(true)}
-                    className="px-3 py-1.5 text-xs font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="px-3 py-1.5 text-xs font-medium text-white bg-primary-500 rounded-lg hover:bg-primary-400 transition-colors"
                   >
                     Mark Result
                   </button>
@@ -195,25 +196,25 @@ export const TipCard = ({ tip, onDelete, onResultMarked }: TipCardProps) => {
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleMarkResult(TipResult.WON)}
-                      className="px-3 py-1.5 text-xs font-medium text-white bg-success-600 rounded-md hover:bg-success-700"
+                      className="px-3 py-1.5 text-xs font-medium text-white bg-primary-500 rounded-lg hover:bg-primary-400"
                     >
                       Won
                     </button>
                     <button
                       onClick={() => handleMarkResult(TipResult.LOST)}
-                      className="px-3 py-1.5 text-xs font-medium text-white bg-red-600 rounded-md hover:bg-red-700"
+                      className="px-3 py-1.5 text-xs font-medium text-white bg-red-500 rounded-lg hover:bg-red-400"
                     >
                       Lost
                     </button>
                     <button
                       onClick={() => handleMarkResult(TipResult.VOID)}
-                      className="px-3 py-1.5 text-xs font-medium text-white bg-neutral-600 rounded-md hover:bg-neutral-700"
+                      className="px-3 py-1.5 text-xs font-medium text-white bg-neutral-600 rounded-lg hover:bg-neutral-500"
                     >
                       Void
                     </button>
                     <button
                       onClick={() => setIsMarkingResult(false)}
-                      className="px-3 py-1.5 text-xs font-medium text-neutral-700 bg-neutral-100 rounded-md hover:bg-neutral-200"
+                      className="px-3 py-1.5 text-xs font-medium text-neutral-400 bg-neutral-800 rounded-lg hover:bg-neutral-700"
                     >
                       Cancel
                     </button>
@@ -227,7 +228,7 @@ export const TipCard = ({ tip, onDelete, onResultMarked }: TipCardProps) => {
               <button
                 onClick={handleDelete}
                 disabled={isDeleting}
-                className="px-3 py-1.5 text-xs font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50"
+                className="px-3 py-1.5 text-xs font-medium text-red-400 bg-red-500/10 rounded-lg hover:bg-red-500/20 transition-colors disabled:opacity-50"
               >
                 {isDeleting ? 'Deleting...' : 'Delete'}
               </button>

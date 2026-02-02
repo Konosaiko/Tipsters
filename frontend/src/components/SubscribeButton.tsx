@@ -40,7 +40,7 @@ export function SubscribeButton({
     return (
       <button
         disabled
-        className={`px-4 py-2 bg-green-100 text-green-700 rounded-lg cursor-default ${className}`}
+        className={`px-4 py-2 bg-green-900/30 text-green-400 rounded-lg cursor-default ${className}`}
       >
         Subscribed
       </button>
@@ -52,7 +52,7 @@ export function SubscribeButton({
       <button
         onClick={handleSubscribe}
         disabled={loading}
-        className={`px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 ${className}`}
+        className={`px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 ${className}`}
       >
         {loading ? (
           'Redirecting...'
@@ -63,7 +63,7 @@ export function SubscribeButton({
           </>
         )}
       </button>
-      {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
+      {error && <p className="text-red-400 text-sm mt-1">{error}</p>}
     </div>
   );
 }

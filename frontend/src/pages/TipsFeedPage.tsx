@@ -44,10 +44,10 @@ export const TipsFeedPage = () => {
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-neutral-900 mb-2">
+          <h1 className="text-3xl font-bold text-white mb-2">
             {filter === 'following' ? 'Following' : 'Discover Tips'}
           </h1>
-          <p className="text-neutral-600">
+          <p className="text-neutral-400">
             {filter === 'following'
               ? 'Tips from tipsters you follow'
               : 'Latest predictions from expert tipsters'}
@@ -55,29 +55,29 @@ export const TipsFeedPage = () => {
         </div>
 
         {/* Tabs */}
-        <div className="mb-6 border-b border-neutral-200">
-          <div className="flex space-x-8">
+        <div className="mb-6 border-b border-neutral-800">
+          <div className="flex space-x-1">
             <button
               onClick={() => setFilter('all')}
-              className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+              className={`pb-3 px-4 border-b-2 font-medium text-sm transition-colors ${
                 filter === 'all'
-                  ? 'border-primary-600 text-primary-600'
-                  : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300'
+                  ? 'border-primary-500 text-primary-500'
+                  : 'border-transparent text-neutral-400 hover:text-white hover:border-neutral-600'
               }`}
             >
               All Tips
             </button>
             <button
               onClick={() => setFilter('following')}
-              className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+              className={`pb-3 px-4 border-b-2 font-medium text-sm transition-colors ${
                 filter === 'following'
-                  ? 'border-primary-600 text-primary-600'
-                  : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300'
+                  ? 'border-primary-500 text-primary-500'
+                  : 'border-transparent text-neutral-400 hover:text-white hover:border-neutral-600'
               }`}
             >
               Following
               {!user && (
-                <span className="ml-2 px-2 py-0.5 text-xs bg-neutral-200 text-neutral-600 rounded">
+                <span className="ml-2 px-2 py-0.5 text-xs bg-neutral-800 text-neutral-400 rounded">
                   Login required
                 </span>
               )}
@@ -88,15 +88,15 @@ export const TipsFeedPage = () => {
         {/* Content */}
         {isLoading ? (
           <div className="flex items-center justify-center min-h-[400px]">
-            <div className="text-neutral-600">Loading tips...</div>
+            <div className="text-neutral-400">Loading tips...</div>
           </div>
         ) : error ? (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+          <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg">
             {error}
           </div>
         ) : tips.length === 0 ? (
-          <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-8 text-center">
-            <p className="text-neutral-600 mb-2">
+          <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-8 text-center">
+            <p className="text-neutral-400 mb-2">
               {filter === 'following'
                 ? "You haven't followed any tipsters yet"
                 : 'No tips found'}
@@ -104,7 +104,7 @@ export const TipsFeedPage = () => {
             {filter === 'following' && (
               <a
                 href="/tipsters"
-                className="text-sm text-primary-600 hover:text-primary-800"
+                className="text-sm text-primary-500 hover:text-primary-400"
               >
                 Browse tipsters to follow
               </a>
