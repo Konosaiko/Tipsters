@@ -10,7 +10,7 @@ interface TipResultBadgeProps {
 export const TipResultBadge = ({ result }: TipResultBadgeProps) => {
   if (result === null) {
     return (
-      <span className="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+      <span className="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-900/30 text-yellow-400">
         Pending
       </span>
     );
@@ -18,7 +18,7 @@ export const TipResultBadge = ({ result }: TipResultBadgeProps) => {
 
   if (result === TipResult.WON) {
     return (
-      <span className="px-2 py-1 text-xs font-semibold rounded-full bg-success-100 text-success-800">
+      <span className="px-2 py-1 text-xs font-semibold rounded-full bg-success-900/30 text-success-400">
         Won
       </span>
     );
@@ -26,7 +26,7 @@ export const TipResultBadge = ({ result }: TipResultBadgeProps) => {
 
   if (result === TipResult.LOST) {
     return (
-      <span className="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+      <span className="px-2 py-1 text-xs font-semibold rounded-full bg-red-900/30 text-red-400">
         Lost
       </span>
     );
@@ -34,7 +34,7 @@ export const TipResultBadge = ({ result }: TipResultBadgeProps) => {
 
   if (result === TipResult.VOID) {
     return (
-      <span className="px-2 py-1 text-xs font-semibold rounded-full bg-neutral-100 text-neutral-800">
+      <span className="px-2 py-1 text-xs font-semibold rounded-full bg-neutral-800 text-neutral-400">
         Cancelled
       </span>
     );

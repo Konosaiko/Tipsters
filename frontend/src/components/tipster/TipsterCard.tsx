@@ -59,18 +59,25 @@ export const TipsterCard = ({ tipster, onFollowChange, currentUserId }: TipsterC
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-neutral-200">
+    <div className="bg-neutral-900 rounded-xl p-6 hover:border-neutral-700 transition-colors border border-neutral-800">
       <div className="flex items-start justify-between mb-4">
-        <Link to={`/tipsters/${tipster.id}`} className="flex-1">
-          <h3 className="text-xl font-bold text-neutral-900 mb-2 hover:text-primary-600">
-            {tipster.displayName}
-          </h3>
-          <p className="text-sm text-neutral-600 mb-1">@{tipster.user.username}</p>
-          <p className="text-xs text-neutral-500">
+        <Link to={`/tipsters/${tipster.id}`} className="flex-1 group">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-12 h-12 rounded-full bg-primary-500 flex items-center justify-center text-neutral-950 font-bold text-lg">
+              {tipster.displayName.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-white group-hover:text-primary-400 transition-colors">
+                {tipster.displayName}
+              </h3>
+              <p className="text-sm text-neutral-500">@{tipster.user.username}</p>
+            </div>
+          </div>
+          <p className="text-xs text-neutral-400">
             {followerCount} {followerCount === 1 ? 'follower' : 'followers'}
           </p>
           {tipster.bio && (
-            <p className="text-neutral-700 mt-3 line-clamp-2">{tipster.bio}</p>
+            <p className="text-neutral-400 mt-3 text-sm line-clamp-2">{tipster.bio}</p>
           )}
         </Link>
         {currentUserId !== tipster.userId && (
@@ -85,50 +92,50 @@ export const TipsterCard = ({ tipster, onFollowChange, currentUserId }: TipsterC
         )}
       </div>
 
-      <div className="mt-4 pt-4 border-t border-neutral-200">
+      <div className="mt-4 pt-4 border-t border-neutral-800">
         {settledTips.length >= 5 ? (
           <div className="flex items-center justify-between">
-            <div className="text-sm text-neutral-700">
-              <span className="font-semibold text-primary-600">
+            <div className="text-sm">
+              <span className="font-semibold text-primary-500">
                 {winRate !== null ? `${winRate}%` : 'N/A'}
               </span>
-              <span className="text-neutral-500 mx-1">•</span>
+              <span className="text-neutral-600 mx-2">•</span>
               <span
                 className={`font-semibold ${
                   roi !== null && roi > 0
-                    ? 'text-success-600'
+                    ? 'text-primary-500'
                     : roi !== null && roi < 0
-                    ? 'text-red-600'
-                    : 'text-neutral-600'
+                    ? 'text-red-500'
+                    : 'text-neutral-500'
                 }`}
               >
                 {roi !== null ? (roi > 0 ? `+${roi}%` : `${roi}%`) : 'N/A'}
               </span>
-              <span className="text-neutral-500 mx-1">•</span>
-              <span className="text-neutral-600">{tipCount} tips</span>
+              <span className="text-neutral-600 mx-2">•</span>
+              <span className="text-neutral-400">{tipCount} tips</span>
             </div>
             <Link
               to={`/tipsters/${tipster.id}`}
-              className="text-primary-600 text-sm font-medium hover:underline"
+              className="text-primary-500 text-sm font-medium hover:text-primary-400 transition-colors"
             >
-              View Profile →
+              View →
             </Link>
           </div>
         ) : (
           <div className="flex items-center justify-between">
-            <div className="text-sm text-neutral-600">
+            <div className="text-sm text-neutral-400">
               {tipCount} {tipCount === 1 ? 'tip' : 'tips'}
               {settledTips.length > 0 && settledTips.length < 5 && (
                 <span className="text-xs text-neutral-500 ml-2">
-                  (Need 5+ settled tips for stats)
+                  (Need 5+ for stats)
                 </span>
               )}
             </div>
             <Link
               to={`/tipsters/${tipster.id}`}
-              className="text-primary-600 text-sm font-medium hover:underline"
+              className="text-primary-500 text-sm font-medium hover:text-primary-400 transition-colors"
             >
-              View Profile →
+              View →
             </Link>
           </div>
         )}

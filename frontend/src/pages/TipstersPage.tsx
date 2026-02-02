@@ -74,21 +74,21 @@ export const TipstersPage = () => {
     <Layout>
       {isLoading ? (
         <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-neutral-600">Loading tipsters...</div>
+          <div className="text-neutral-400">Loading tipsters...</div>
         </div>
       ) : error ? (
         <div className="max-w-4xl mx-auto px-4 py-8">
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+          <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg">
             {error}
           </div>
         </div>
       ) : (
         <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-neutral-900 mb-2">
+            <h1 className="text-3xl font-bold text-white mb-2">
               Browse Tipsters
             </h1>
-            <p className="text-neutral-600">
+            <p className="text-neutral-400">
               Discover expert tipsters and their betting predictions
             </p>
           </div>
@@ -101,14 +101,14 @@ export const TipstersPage = () => {
                 placeholder="Search by name, username, or bio..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-4 py-3 bg-neutral-900 border border-neutral-800 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               />
             </div>
             <div className="sm:w-48">
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as SortOption)}
-                className="w-full px-4 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-4 py-3 bg-neutral-900 border border-neutral-800 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               >
                 <option value="newest">Newest First</option>
                 <option value="followers">Most Followers</option>
@@ -118,18 +118,18 @@ export const TipstersPage = () => {
           </div>
 
           {filteredAndSortedTipsters.length === 0 && tipsters.length > 0 ? (
-            <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-8 text-center">
-              <p className="text-neutral-600 mb-2">No tipsters match your search</p>
+            <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-8 text-center">
+              <p className="text-neutral-400 mb-2">No tipsters match your search</p>
               <button
                 onClick={() => setSearchQuery('')}
-                className="text-sm text-primary-600 hover:text-primary-800"
+                className="text-sm text-primary-500 hover:text-primary-400"
               >
                 Clear search
               </button>
             </div>
           ) : tipsters.length === 0 ? (
-            <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-8 text-center">
-              <p className="text-neutral-600 mb-2">No tipsters found</p>
+            <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-8 text-center">
+              <p className="text-neutral-400 mb-2">No tipsters found</p>
               <p className="text-sm text-neutral-500">
                 Be the first to create a tipster profile!
               </p>

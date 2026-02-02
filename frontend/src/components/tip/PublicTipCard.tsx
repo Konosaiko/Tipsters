@@ -39,22 +39,22 @@ export const PublicTipCard = ({ tip }: PublicTipCardProps) => {
   // Locked premium tip view
   if (isLocked) {
     return (
-      <div className="bg-white border border-purple-200 rounded-lg p-4 relative overflow-hidden">
+      <div className="bg-neutral-900 border border-purple-800/50 rounded-lg p-4 relative overflow-hidden">
         <div className="absolute top-2 right-2">
-          <span className="px-2 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700">
+          <span className="px-2 py-1 text-xs font-medium rounded-full bg-purple-900/50 text-purple-400">
             Premium
           </span>
         </div>
 
         <div className="flex justify-between items-start">
           <div className="flex-1">
-            <p className="text-sm font-medium text-primary-600">{tip.event}</p>
+            <p className="text-sm font-medium text-primary-500">{tip.event}</p>
 
             {/* Locked content placeholder */}
-            <div className="mt-3 p-4 bg-purple-50 rounded-lg border border-purple-200 text-center">
+            <div className="mt-3 p-4 bg-purple-900/20 rounded-lg border border-purple-800/50 text-center">
               <div className="text-3xl mb-2">🔒</div>
-              <p className="font-medium text-purple-800 mb-1">Premium Tip</p>
-              <p className="text-sm text-purple-600 mb-3">
+              <p className="font-medium text-purple-300 mb-1">Premium Tip</p>
+              <p className="text-sm text-purple-400 mb-3">
                 Subscribe to unlock this prediction
               </p>
               {tip.tipster && (
@@ -70,13 +70,13 @@ export const PublicTipCard = ({ tip }: PublicTipCardProps) => {
             {/* Sport & Platform Tags (still visible) */}
             <div className="flex flex-wrap gap-2 mt-3">
               {tip.sport && (
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary-900/30 text-primary-400">
                   {formatSport(tip.sport)}
                 </span>
               )}
             </div>
 
-            <p className="mt-2 text-xs text-neutral-400">
+            <p className="mt-2 text-xs text-neutral-500">
               {new Date(tip.createdAt).toLocaleDateString()}
             </p>
           </div>
@@ -87,11 +87,11 @@ export const PublicTipCard = ({ tip }: PublicTipCardProps) => {
 
   // Regular tip view
   return (
-    <div className="bg-white border border-neutral-200 rounded-lg p-4 hover:shadow-md transition-shadow relative">
+    <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-4 hover:border-neutral-700 transition-colors relative">
       {/* Premium badge for unlocked premium tips */}
       {isPremium && (
         <div className="absolute top-2 right-2">
-          <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">
+          <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-900/30 text-green-400">
             Premium ✓
           </span>
         </div>
@@ -99,23 +99,23 @@ export const PublicTipCard = ({ tip }: PublicTipCardProps) => {
 
       <div className="flex justify-between items-start">
         <div className="flex-1">
-          <p className="text-sm font-medium text-primary-600">{tip.event}</p>
-          <p className="mt-1 text-sm text-neutral-900">
+          <p className="text-sm font-medium text-primary-500">{tip.event}</p>
+          <p className="mt-1 text-sm text-neutral-200">
             <span className="font-semibold">Prediction:</span> {tip.prediction}
           </p>
           {tip.explanation && (
-            <p className="mt-1 text-sm text-neutral-600">{tip.explanation}</p>
+            <p className="mt-1 text-sm text-neutral-400">{tip.explanation}</p>
           )}
 
           {/* Sport & Platform Tags */}
           <div className="flex flex-wrap gap-2 mt-2">
             {tip.sport && (
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary-900/30 text-primary-400">
                 {formatSport(tip.sport)}
               </span>
             )}
             {tip.platform && (
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-accent-100 text-accent-800">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-accent-900/30 text-accent-400">
                 {tip.platform}
               </span>
             )}
@@ -135,16 +135,16 @@ export const PublicTipCard = ({ tip }: PublicTipCardProps) => {
             </div>
           )}
 
-          <p className="mt-2 text-xs text-neutral-400">
+          <p className="mt-2 text-xs text-neutral-500">
             {new Date(tip.createdAt).toLocaleDateString()}
           </p>
         </div>
 
         <div className="ml-4 flex flex-col items-end space-y-2 mt-6">
-          <span className="px-3 py-1 text-sm font-semibold rounded-full bg-success-100 text-success-800">
+          <span className="px-3 py-1 text-sm font-semibold rounded-full bg-success-900/30 text-success-400">
             @{tip.odds}
           </span>
-          <span className="px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
+          <span className="px-3 py-1 text-sm font-semibold rounded-full bg-blue-900/30 text-blue-400">
             {tip.stake}u
           </span>
           <TipResultBadge result={tip.result} />

@@ -59,14 +59,14 @@ export const FollowButton = ({
   };
 
   const baseClasses =
-    'font-medium rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed';
+    'font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed';
 
   // Change button style on hover when following
   const variantClasses = isFollowing
     ? isHovered
-      ? 'bg-red-600 text-white'
-      : 'bg-neutral-200 text-neutral-700 hover:bg-red-600 hover:text-white'
-    : 'bg-primary-500 text-white hover:bg-primary-600';
+      ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+      : 'bg-neutral-800 text-neutral-300 border border-neutral-700 hover:bg-red-500/20 hover:text-red-400 hover:border-red-500/30'
+    : 'bg-primary-500 text-neutral-950 hover:bg-primary-400';
 
   // Show "Unfollow" on hover when following
   const getButtonText = () => {

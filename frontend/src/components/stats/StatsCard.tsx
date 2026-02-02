@@ -21,8 +21,8 @@ export const StatsCard = ({ label, value, suffix = '', trend = 'neutral' }: Stat
   };
 
   return (
-    <div className="bg-white rounded-lg border border-neutral-200 p-4">
-      <p className="text-sm font-medium text-neutral-600 mb-1">{label}</p>
+    <div className="bg-neutral-800 rounded-lg border border-neutral-700 p-4">
+      <p className="text-sm font-medium text-neutral-400 mb-1">{label}</p>
       <p className={`text-3xl font-bold ${getTrendColor()}`}>
         {value}
         {suffix && <span className="text-lg ml-1">{suffix}</span>}
