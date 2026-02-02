@@ -206,20 +206,17 @@ export class StripeService {
       throw new Error('Tipster has no Stripe account');
     }
 
-    // Create product on connected account
-    const product = await stripe.products.create(
-      {
-        name: offer.name,
-        description: offer.description || undefined,
-        metadata: {
-          offerId: offer.id,
-          tipsterId: offer.tipsterId,
-        },
+    // Create product on PLATFORM account (not connected account)
+    // This is required for destination charges with Stripe Connect
+    const product = await stripe.products.create({
+      name: offer.name,
+      description: offer.description || undefined,
+      metadata: {
+        offerId: offer.id,
+        tipsterId: offer.tipsterId,
+        connectedAccountId: offer.tipster.stripeAccount.stripeAccountId,
       },
-      {
-        stripeAccount: offer.tipster.stripeAccount.stripeAccountId,
-      }
-    );
+    });
 
     // Determine price configuration
     const priceData: Stripe.PriceCreateParams = {
@@ -228,6 +225,7 @@ export class StripeService {
       unit_amount: offer.price,
       metadata: {
         offerId: offer.id,
+        tipsterId: offer.tipsterId,
       },
     };
 
@@ -238,9 +236,7 @@ export class StripeService {
       };
     }
 
-    const price = await stripe.prices.create(priceData, {
-      stripeAccount: offer.tipster.stripeAccount.stripeAccountId,
-    });
+    const price = await stripe.prices.create(priceData);
 
     // Update offer with Stripe IDs
     await db.subscriptionOffer.update({
@@ -293,8 +289,22 @@ export class StripeService {
       throw new Error('Tipster cannot receive payments yet');
     }
 
-    // Ensure product exists in Stripe
-    if (!offer.stripePriceId) {
+    // Ensure product exists in Stripe (on platform account)
+    // Also verify the price is valid - it may have been created on connected account previously
+    let priceId = offer.stripePriceId;
+
+    if (priceId) {
+      // Verify the price exists on the platform account
+      try {
+        await stripe.prices.retrieve(priceId);
+      } catch (error) {
+        // Price doesn't exist on platform account, need to recreate
+        console.log(`Price ${priceId} not found on platform, recreating...`);
+        priceId = null;
+      }
+    }
+
+    if (!priceId) {
       await this.createProductForOffer(offerId);
       // Refresh offer data
       const updatedOffer = await db.subscriptionOffer.findUnique({
@@ -303,8 +313,10 @@ export class StripeService {
       if (!updatedOffer?.stripePriceId) {
         throw new Error('Failed to create Stripe product');
       }
-      offer.stripePriceId = updatedOffer.stripePriceId;
+      priceId = updatedOffer.stripePriceId;
     }
+
+    offer.stripePriceId = priceId;
 
     // Get or create Stripe customer
     const user = await db.user.findUnique({ where: { id: userId } });
