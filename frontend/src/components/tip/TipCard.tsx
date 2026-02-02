@@ -34,7 +34,7 @@ const formatSport = (sport: Sport): string => {
 /**
  * Card component to display a single tip in the feed
  */
-export const TipCard = ({ tip, onUpdate, onDelete, onResultMarked }: TipCardProps) => {
+export const TipCard = ({ tip, onDelete, onResultMarked }: TipCardProps) => {
   const [isMarkingResult, setIsMarkingResult] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 

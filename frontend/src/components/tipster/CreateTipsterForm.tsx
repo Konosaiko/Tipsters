@@ -4,9 +4,10 @@ import { CreateTipsterDto } from '../../types/tipster.types';
 
 interface CreateTipsterFormProps {
   onSuccess: () => void;
+  darkMode?: boolean;
 }
 
-export const CreateTipsterForm = ({ onSuccess }: CreateTipsterFormProps) => {
+export const CreateTipsterForm = ({ onSuccess, darkMode = false }: CreateTipsterFormProps) => {
   const [formData, setFormData] = useState<CreateTipsterDto>({
     displayName: '',
     bio: '',
@@ -30,6 +31,68 @@ export const CreateTipsterForm = ({ onSuccess }: CreateTipsterFormProps) => {
     }
   };
 
+  // Dark mode styles
+  if (darkMode) {
+    return (
+      <div>
+        <h3 className="text-lg font-semibold text-white mb-2">
+          Become a Tipster
+        </h3>
+        <p className="text-sm text-neutral-400 mb-6">
+          Create your tipster profile to start publishing tips.
+        </p>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg">
+              {error}
+            </div>
+          )}
+
+          <div>
+            <label htmlFor="displayName" className="block text-sm font-medium text-neutral-300 mb-2">
+              Display Name *
+            </label>
+            <input
+              type="text"
+              id="displayName"
+              required
+              className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              placeholder="e.g., BetMaster Pro"
+              value={formData.displayName}
+              onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="bio" className="block text-sm font-medium text-neutral-300 mb-2">
+              Bio (Optional)
+            </label>
+            <textarea
+              id="bio"
+              rows={3}
+              className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              placeholder="Tell subscribers about your expertise..."
+              value={formData.bio}
+              onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+            />
+          </div>
+
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="px-4 py-2 bg-primary-500 text-neutral-950 rounded-lg font-medium hover:bg-primary-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? 'Creating...' : 'Create Tipster Profile'}
+            </button>
+          </div>
+        </form>
+      </div>
+    );
+  }
+
+  // Light mode (original)
   return (
     <div className="bg-white shadow sm:rounded-lg">
       <div className="px-4 py-5 sm:p-6">

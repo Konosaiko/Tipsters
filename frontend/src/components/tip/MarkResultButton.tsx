@@ -26,7 +26,7 @@ export const MarkResultButton = ({ tip, onResultMarked }: MarkResultButtonProps)
     setIsMarking(true);
 
     try {
-      await tipApi.markTipResult(tip.id, result);
+      await tipApi.markTipResult(tip.id, { result });
       setIsOpen(false);
       onResultMarked();
     } catch (err: any) {

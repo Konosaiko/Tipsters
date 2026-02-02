@@ -321,7 +321,7 @@ export const TipsterDetailPage = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {tipster.tips.map((tip) => (
+            {tipster.tips?.map((tip) => (
               <PublicTipCard key={tip.id} tip={tip} />
             ))}
           </div>
