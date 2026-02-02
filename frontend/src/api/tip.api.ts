@@ -5,7 +5,6 @@ import {
   Tip,
   TipWithTipster,
   MarkTipResultDto,
-  TipResult,
 } from '../types/tip.types';
 
 /**
