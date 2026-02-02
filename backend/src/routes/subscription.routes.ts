@@ -34,4 +34,9 @@ router.post('/:id/cancel', authenticate, (req, res) =>
   subscriptionController.cancelSubscription(req, res)
 );
 
+// POST /api/subscriptions/sync/:tipsterId - Sync subscription from Stripe (dev helper)
+router.post('/sync/:tipsterId', authenticate, (req, res) =>
+  subscriptionController.syncFromStripe(req, res)
+);
+
 export default router;

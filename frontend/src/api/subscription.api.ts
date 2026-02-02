@@ -115,6 +115,14 @@ export async function getMySubscribers(): Promise<
 }
 
 /**
+ * Sync subscription from Stripe (for development without webhooks)
+ */
+export async function syncSubscription(tipsterId: string): Promise<{ message: string }> {
+  const response = await apiClient.post(`/subscriptions/sync/${tipsterId}`);
+  return response.data;
+}
+
+/**
  * Get status badge color
  */
 export function getStatusColor(status: SubscriptionStatus): string {

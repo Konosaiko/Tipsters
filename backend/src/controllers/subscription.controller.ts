@@ -215,6 +215,35 @@ export class SubscriptionController {
       res.status(500).json({ error: 'Internal server error' });
     }
   }
+
+  /**
+   * POST /api/subscriptions/sync/:tipsterId
+   * Sync subscription from Stripe (for development without webhooks)
+   */
+  async syncFromStripe(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      if (!req.user) {
+        res.status(401).json({ error: 'Authentication required' });
+        return;
+      }
+
+      const { tipsterId } = req.params;
+
+      const synced = await subscriptionService.syncFromStripe(
+        req.user.userId,
+        tipsterId
+      );
+
+      if (synced) {
+        res.status(200).json({ message: 'Subscription synced successfully' });
+      } else {
+        res.status(200).json({ message: 'No subscription to sync' });
+      }
+    } catch (error) {
+      console.error('Error syncing subscription:', error);
+      res.status(500).json({ error: 'Failed to sync subscription' });
+    }
+  }
 }
 
 // Export singleton instance
