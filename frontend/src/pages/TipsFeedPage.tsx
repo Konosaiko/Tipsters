@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Layout } from '../components/layout/Layout';
 import { tipApi } from '../api/tip.api';
 import { TipWithTipster } from '../types/tip.types';
@@ -12,6 +13,7 @@ type FeedFilter = 'all' | 'following';
  * Shows all tips or only tips from followed tipsters
  */
 export const TipsFeedPage = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [tips, setTips] = useState<TipWithTipster[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -26,7 +28,7 @@ export const TipsFeedPage = () => {
       setTips(data);
     } catch (err: any) {
       if (err.response?.status === 401 && newFilter === 'following') {
-        setError('Please log in to view your following feed');
+        setError(t('tipsFeed.loginToViewFollowing'));
       } else {
         setError(err instanceof Error ? err.message : 'Failed to load tips');
       }
@@ -45,12 +47,12 @@ export const TipsFeedPage = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">
-            {filter === 'following' ? 'Following' : 'Discover Tips'}
+            {filter === 'following' ? t('tipsFeed.following') : t('tipsFeed.discoverTips')}
           </h1>
           <p className="text-neutral-400">
             {filter === 'following'
-              ? 'Tips from tipsters you follow'
-              : 'Latest predictions from expert tipsters'}
+              ? t('tipsFeed.tipsFromFollowing')
+              : t('tipsFeed.latestPredictions')}
           </p>
         </div>
 
@@ -65,7 +67,7 @@ export const TipsFeedPage = () => {
                   : 'border-transparent text-neutral-400 hover:text-white hover:border-neutral-600'
               }`}
             >
-              All Tips
+              {t('tipsFeed.allTips')}
             </button>
             <button
               onClick={() => setFilter('following')}
@@ -75,10 +77,10 @@ export const TipsFeedPage = () => {
                   : 'border-transparent text-neutral-400 hover:text-white hover:border-neutral-600'
               }`}
             >
-              Following
+              {t('tipsFeed.followingTab')}
               {!user && (
                 <span className="ml-2 px-2 py-0.5 text-xs bg-neutral-800 text-neutral-400 rounded">
-                  Login required
+                  {t('tipsFeed.loginRequired')}
                 </span>
               )}
             </button>
@@ -88,7 +90,7 @@ export const TipsFeedPage = () => {
         {/* Content */}
         {isLoading ? (
           <div className="flex items-center justify-center min-h-[400px]">
-            <div className="text-neutral-400">Loading tips...</div>
+            <div className="text-neutral-400">{t('tipsFeed.loadingTips')}</div>
           </div>
         ) : error ? (
           <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg">
@@ -98,15 +100,15 @@ export const TipsFeedPage = () => {
           <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-8 text-center">
             <p className="text-neutral-400 mb-2">
               {filter === 'following'
-                ? "You haven't followed any tipsters yet"
-                : 'No tips found'}
+                ? t('tipsFeed.noFollowedTipsters')
+                : t('tipsFeed.noTipsFound')}
             </p>
             {filter === 'following' && (
               <a
                 href="/tipsters"
                 className="text-sm text-primary-500 hover:text-primary-400"
               >
-                Browse tipsters to follow
+                {t('tipsFeed.browseTipsters')}
               </a>
             )}
           </div>

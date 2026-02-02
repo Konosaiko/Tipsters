@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Layout } from '../components/layout/Layout';
 import { tipsterApi } from '../api/tipster.api';
 import { TipsterWithDetails } from '../types/tipster.types';
@@ -12,6 +13,7 @@ import { useAuth } from '../context/AuthContext';
 type SortOption = 'newest' | 'followers' | 'tips';
 
 export const TipstersPage = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [tipsters, setTipsters] = useState<TipsterWithDetails[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -74,7 +76,7 @@ export const TipstersPage = () => {
     <Layout>
       {isLoading ? (
         <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-neutral-400">Loading tipsters...</div>
+          <div className="text-neutral-400">{t('tipsters.loadingTipsters')}</div>
         </div>
       ) : error ? (
         <div className="max-w-4xl mx-auto px-4 py-8">
@@ -86,10 +88,10 @@ export const TipstersPage = () => {
         <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-white mb-2">
-              Browse Tipsters
+              {t('tipsters.browse')}
             </h1>
             <p className="text-neutral-400">
-              Discover expert tipsters and their betting predictions
+              {t('tipsters.discover')}
             </p>
           </div>
 
@@ -98,7 +100,7 @@ export const TipstersPage = () => {
             <div className="flex-1">
               <input
                 type="text"
-                placeholder="Search by name, username, or bio..."
+                placeholder={t('tipsters.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full px-4 py-3 bg-neutral-900 border border-neutral-800 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
@@ -110,28 +112,28 @@ export const TipstersPage = () => {
                 onChange={(e) => setSortBy(e.target.value as SortOption)}
                 className="w-full px-4 py-3 bg-neutral-900 border border-neutral-800 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               >
-                <option value="newest">Newest First</option>
-                <option value="followers">Most Followers</option>
-                <option value="tips">Most Tips</option>
+                <option value="newest">{t('tipsters.sortNewest')}</option>
+                <option value="followers">{t('tipsters.sortMostFollowers')}</option>
+                <option value="tips">{t('tipsters.sortMostTips')}</option>
               </select>
             </div>
           </div>
 
           {filteredAndSortedTipsters.length === 0 && tipsters.length > 0 ? (
             <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-8 text-center">
-              <p className="text-neutral-400 mb-2">No tipsters match your search</p>
+              <p className="text-neutral-400 mb-2">{t('tipsters.noMatch')}</p>
               <button
                 onClick={() => setSearchQuery('')}
                 className="text-sm text-primary-500 hover:text-primary-400"
               >
-                Clear search
+                {t('tipsters.clearSearch')}
               </button>
             </div>
           ) : tipsters.length === 0 ? (
             <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-8 text-center">
-              <p className="text-neutral-400 mb-2">No tipsters found</p>
+              <p className="text-neutral-400 mb-2">{t('tipsters.noTipstersFound')}</p>
               <p className="text-sm text-neutral-500">
-                Be the first to create a tipster profile!
+                {t('tipsters.beFirst')}
               </p>
             </div>
           ) : (
