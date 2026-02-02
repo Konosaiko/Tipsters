@@ -358,6 +358,72 @@ export class SubscriptionService {
 
     return result.count;
   }
+
+  /**
+   * Sync subscription from Stripe (for development without webhooks)
+   * Checks if user has a Stripe subscription and creates local record if missing
+   *
+   * @param userId - The user ID
+   * @param tipsterId - The tipster ID
+   */
+  async syncFromStripe(userId: string, tipsterId: string): Promise<boolean> {
+    const stripe = stripeService.getStripeInstance();
+
+    // Get user's Stripe customer ID
+    const user = await db.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user?.stripeCustomerId) {
+      return false;
+    }
+
+    // Get tipster's offers
+    const offers = await db.subscriptionOffer.findMany({
+      where: { tipsterId, isActive: true },
+    });
+
+    if (offers.length === 0) {
+      return false;
+    }
+
+    // Check for existing subscriptions in Stripe
+    const stripeSubscriptions = await stripe.subscriptions.list({
+      customer: user.stripeCustomerId,
+      status: 'all',
+    });
+
+    for (const stripeSub of stripeSubscriptions.data) {
+      // Check if subscription is for one of this tipster's offers
+      const { offerId } = stripeSub.metadata || {};
+
+      if (!offerId) continue;
+
+      const matchingOffer = offers.find((o) => o.id === offerId);
+      if (!matchingOffer) continue;
+
+      // Check if we already have this subscription locally
+      const existing = await db.subscription.findUnique({
+        where: { stripeSubscriptionId: stripeSub.id },
+      });
+
+      if (!existing && stripeSub.status === 'active') {
+        // Create the subscription locally
+        await this.createSubscription(
+          userId,
+          offerId,
+          stripeSub.id,
+          SubscriptionStatus.ACTIVE,
+          new Date(stripeSub.current_period_end * 1000),
+          stripeSub.trial_end ? new Date(stripeSub.trial_end * 1000) : null
+        );
+        console.log(`Synced subscription ${stripeSub.id} from Stripe`);
+        return true;
+      }
+    }
+
+    return false;
+  }
 }
 
 // Export singleton instance

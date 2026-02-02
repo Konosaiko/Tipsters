@@ -9,7 +9,7 @@ import { PublicTipCard } from '../components/tip/PublicTipCard';
 import { StatsPanel } from '../components/stats/StatsPanel';
 import { FollowButton } from '../components/follow/FollowButton';
 import { useAuth } from '../context/AuthContext';
-import { getTipsterAccess, TipsterAccessSummary } from '../api/subscription.api';
+import { getTipsterAccess, TipsterAccessSummary, syncSubscription } from '../api/subscription.api';
 import { SubscriptionOffer, formatPrice, getDurationText } from '../api/offer.api';
 import { SubscribeButton } from '../components/SubscribeButton';
 
@@ -33,12 +33,25 @@ export const TipsterDetailPage = () => {
   // Check for subscription success/cancel message from Stripe redirect
   useEffect(() => {
     const subscriptionStatus = searchParams.get('subscription');
-    if (subscriptionStatus === 'success') {
-      setSubscriptionMessage('Subscription successful! You now have access to premium tips.');
+    if (subscriptionStatus === 'success' && id && user) {
+      // Sync subscription from Stripe (for dev without webhooks)
+      syncSubscription(id)
+        .then(() => {
+          // Refresh access info
+          return getTipsterAccess(id);
+        })
+        .then((data) => {
+          setAccessInfo(data);
+          setSubscriptionMessage('Subscription successful! You now have access to premium tips.');
+        })
+        .catch((err) => {
+          console.error('Failed to sync subscription:', err);
+          setSubscriptionMessage('Subscription successful! Refreshing your access...');
+        });
     } else if (subscriptionStatus === 'cancelled') {
       setSubscriptionMessage('Subscription was cancelled.');
     }
-  }, [searchParams]);
+  }, [searchParams, id, user]);
 
   // Fetch tipster profile
   useEffect(() => {
