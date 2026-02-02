@@ -291,32 +291,34 @@ export class StripeService {
 
     // Ensure product exists in Stripe (on platform account)
     // Also verify the price is valid - it may have been created on connected account previously
-    let priceId = offer.stripePriceId;
+    let validPriceId: string | null = null;
 
-    if (priceId) {
+    if (offer.stripePriceId) {
       // Verify the price exists on the platform account
       try {
-        await stripe.prices.retrieve(priceId);
+        const price = await stripe.prices.retrieve(offer.stripePriceId);
+        // Price exists on platform, use it
+        validPriceId = price.id;
+        console.log(`Price ${validPriceId} verified on platform account`);
       } catch (error) {
         // Price doesn't exist on platform account, need to recreate
-        console.log(`Price ${priceId} not found on platform, recreating...`);
-        priceId = null;
+        console.log(
+          `Price ${offer.stripePriceId} not found on platform, will recreate...`
+        );
+        // Clear the invalid price from database
+        await db.subscriptionOffer.update({
+          where: { id: offerId },
+          data: { stripePriceId: null, stripeProductId: null },
+        });
       }
     }
 
-    if (!priceId) {
-      await this.createProductForOffer(offerId);
-      // Refresh offer data
-      const updatedOffer = await db.subscriptionOffer.findUnique({
-        where: { id: offerId },
-      });
-      if (!updatedOffer?.stripePriceId) {
-        throw new Error('Failed to create Stripe product');
-      }
-      priceId = updatedOffer.stripePriceId;
+    if (!validPriceId) {
+      console.log(`Creating new product/price for offer ${offerId}...`);
+      const { priceId } = await this.createProductForOffer(offerId);
+      validPriceId = priceId;
+      console.log(`Created new price: ${validPriceId}`);
     }
-
-    offer.stripePriceId = priceId;
 
     // Get or create Stripe customer
     const user = await db.user.findUnique({ where: { id: userId } });
@@ -354,7 +356,7 @@ export class StripeService {
       mode: offer.duration === 'LIFETIME' ? 'payment' : 'subscription',
       line_items: [
         {
-          price: offer.stripePriceId,
+          price: validPriceId,
           quantity: 1,
         },
       ],
