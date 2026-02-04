@@ -128,7 +128,7 @@ export class TipService {
         select: { tipsterId: true },
       });
 
-      const followedTipsterIds = follows.map((f) => f.tipsterId);
+      const followedTipsterIds = follows.map((f: { tipsterId: string }) => f.tipsterId);
 
       if (followedTipsterIds.length === 0) {
         // User doesn't follow anyone

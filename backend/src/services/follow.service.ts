@@ -91,7 +91,7 @@ export class FollowService {
       select: { tipsterId: true },
     });
 
-    return follows.map((f) => f.tipsterId);
+    return follows.map((f: { tipsterId: string }) => f.tipsterId);
   }
 
   /**
@@ -142,7 +142,7 @@ export class FollowService {
     });
 
     const map = new Map<string, number>();
-    counts.forEach((count) => {
+    counts.forEach((count: { tipsterId: string; _count: number }) => {
       map.set(count.tipsterId, count._count);
     });
 
