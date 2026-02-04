@@ -1,7 +1,9 @@
 import { Link, NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 
 export const Navbar = () => {
+  const { t } = useTranslation();
   const { isAuthenticated, user, logout } = useAuth();
 
   return (
@@ -13,7 +15,7 @@ export const Navbar = () => {
               <div className="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center">
                 <span className="text-neutral-950 font-bold text-sm">T</span>
               </div>
-              <span className="text-xl font-bold text-white">Tipsters</span>
+              <span className="text-xl font-bold text-white">{t('nav.logo')}</span>
             </Link>
 
             <div className="hidden sm:ml-8 sm:flex sm:space-x-1">
@@ -28,7 +30,7 @@ export const Navbar = () => {
                   }`
                 }
               >
-                Feed
+                {t('nav.feed')}
               </NavLink>
               <NavLink
                 to="/tipsters"
@@ -40,7 +42,7 @@ export const Navbar = () => {
                   }`
                 }
               >
-                Tipsters
+                {t('nav.tipsters')}
               </NavLink>
               {isAuthenticated && (
                 <NavLink
@@ -53,7 +55,7 @@ export const Navbar = () => {
                     }`
                   }
                 >
-                  Dashboard
+                  {t('nav.dashboard')}
                 </NavLink>
               )}
             </div>
@@ -63,13 +65,13 @@ export const Navbar = () => {
             {isAuthenticated ? (
               <>
                 <span className="text-sm text-neutral-400">
-                  Hi, <span className="text-white font-medium">{user?.username}</span>
+                  {t('nav.greeting')} <span className="text-white font-medium">{user?.username}</span>
                 </span>
                 <button
                   onClick={logout}
                   className="text-neutral-400 hover:text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-neutral-800 transition-colors"
                 >
-                  Logout
+                  {t('nav.logout')}
                 </button>
               </>
             ) : (
@@ -78,13 +80,13 @@ export const Navbar = () => {
                   to="/login"
                   className="text-neutral-400 hover:text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-neutral-800 transition-colors"
                 >
-                  Login
+                  {t('nav.login')}
                 </Link>
                 <Link
                   to="/register"
                   className="bg-primary-500 hover:bg-primary-400 text-neutral-950 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                 >
-                  Sign up
+                  {t('nav.signup')}
                 </Link>
               </>
             )}

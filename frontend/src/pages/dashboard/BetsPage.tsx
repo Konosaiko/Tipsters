@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { TipWithTipster, TipResult } from '../../types/tip.types';
 import { tipApi } from '../../api/tip.api';
 import { DashboardTipCard } from '../../components/dashboard/DashboardTipCard';
 
 export const BetsPage = () => {
+  const { t } = useTranslation();
   const [tips, setTips] = useState<TipWithTipster[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -44,7 +46,7 @@ export const BetsPage = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-neutral-400">Loading your bets...</div>
+        <div className="text-neutral-400">{t('bets.loadingBets')}</div>
       </div>
     );
   }
@@ -68,9 +70,9 @@ export const BetsPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">My Bets</h1>
+          <h1 className="text-2xl font-bold text-white">{t('bets.myBets')}</h1>
           <p className="text-neutral-400 mt-1">
-            Manage and track all your published betting tips
+            {t('bets.manageAndTrack')}
           </p>
         </div>
         <Link
@@ -80,7 +82,7 @@ export const BetsPage = () => {
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
-          New Bet
+          {t('bets.newBet')}
         </Link>
       </div>
 
@@ -94,7 +96,7 @@ export const BetsPage = () => {
               : 'bg-neutral-900 border-neutral-800 hover:border-neutral-700'
           }`}
         >
-          <p className="text-neutral-400 text-sm">All Bets</p>
+          <p className="text-neutral-400 text-sm">{t('bets.allBets')}</p>
           <p className="text-2xl font-bold text-white">{stats.total}</p>
         </button>
         <button
@@ -105,7 +107,7 @@ export const BetsPage = () => {
               : 'bg-neutral-900 border-neutral-800 hover:border-neutral-700'
           }`}
         >
-          <p className="text-neutral-400 text-sm">Pending</p>
+          <p className="text-neutral-400 text-sm">{t('bets.pending')}</p>
           <p className="text-2xl font-bold text-yellow-500">{stats.pending}</p>
         </button>
         <button
@@ -116,7 +118,7 @@ export const BetsPage = () => {
               : 'bg-neutral-900 border-neutral-800 hover:border-neutral-700'
           }`}
         >
-          <p className="text-neutral-400 text-sm">Won</p>
+          <p className="text-neutral-400 text-sm">{t('bets.won')}</p>
           <p className="text-2xl font-bold text-primary-500">{stats.won}</p>
         </button>
         <button
@@ -127,7 +129,7 @@ export const BetsPage = () => {
               : 'bg-neutral-900 border-neutral-800 hover:border-neutral-700'
           }`}
         >
-          <p className="text-neutral-400 text-sm">Lost</p>
+          <p className="text-neutral-400 text-sm">{t('bets.lost')}</p>
           <p className="text-2xl font-bold text-red-500">{stats.lost}</p>
         </button>
       </div>
@@ -143,23 +145,23 @@ export const BetsPage = () => {
                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
               </div>
-              <h3 className="text-white font-semibold mb-2">No bets yet</h3>
-              <p className="text-neutral-500 mb-6">Start by creating your first betting prediction.</p>
+              <h3 className="text-white font-semibold mb-2">{t('bets.noBetsYet')}</h3>
+              <p className="text-neutral-500 mb-6">{t('bets.startByCreating')}</p>
               <Link
                 to="/dashboard/create"
                 className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500 text-neutral-950 rounded-lg font-medium hover:bg-primary-400 transition-colors"
               >
-                Create your first bet
+                {t('bets.createFirstBet')}
               </Link>
             </>
           ) : (
             <>
-              <p className="text-neutral-400">No bets match the selected filter.</p>
+              <p className="text-neutral-400">{t('bets.noMatchFilter')}</p>
               <button
                 onClick={() => setFilter('all')}
                 className="mt-4 text-primary-500 hover:text-primary-400 font-medium"
               >
-                Show all bets
+                {t('bets.showAllBets')}
               </button>
             </>
           )}

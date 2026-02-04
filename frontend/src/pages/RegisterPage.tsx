@@ -1,9 +1,11 @@
 import { useState, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import { RegisterDto } from '../types/auth.types';
 
 export const RegisterPage = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { register } = useAuth();
 
@@ -26,7 +28,7 @@ export const RegisterPage = () => {
       await register(formData);
       navigate('/dashboard');
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Registration failed. Please try again.');
+      setError(err.response?.data?.error || t('auth.registrationFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -40,15 +42,15 @@ export const RegisterPage = () => {
             <div className="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center">
               <span className="text-neutral-950 font-bold text-lg">T</span>
             </div>
-            <span className="text-2xl font-bold text-white">Tipsters</span>
+            <span className="text-2xl font-bold text-white">{t('nav.logo')}</span>
           </Link>
           <h2 className="text-3xl font-bold text-white">
-            Create your account
+            {t('auth.createAccount')}
           </h2>
           <p className="mt-2 text-sm text-neutral-400">
-            Already have an account?{' '}
+            {t('auth.hasAccount')}{' '}
             <Link to="/login" className="font-medium text-primary-500 hover:text-primary-400">
-              Sign in
+              {t('auth.signIn')}
             </Link>
           </p>
         </div>
@@ -64,7 +66,7 @@ export const RegisterPage = () => {
             <div className="space-y-4">
               <div>
                 <label htmlFor="username" className="block text-sm font-medium text-neutral-300 mb-2">
-                  Username
+                  {t('auth.username')}
                 </label>
                 <input
                   id="username"
@@ -72,7 +74,7 @@ export const RegisterPage = () => {
                   type="text"
                   required
                   className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="johndoe"
+                  placeholder={t('auth.usernamePlaceholder')}
                   value={formData.username}
                   onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                 />
@@ -80,7 +82,7 @@ export const RegisterPage = () => {
 
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-neutral-300 mb-2">
-                  Email address
+                  {t('auth.email')}
                 </label>
                 <input
                   id="email"
@@ -88,7 +90,7 @@ export const RegisterPage = () => {
                   type="email"
                   required
                   className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="john@example.com"
+                  placeholder={t('auth.emailPlaceholder')}
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 />
@@ -96,7 +98,7 @@ export const RegisterPage = () => {
 
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-neutral-300 mb-2">
-                  Password
+                  {t('auth.password')}
                 </label>
                 <input
                   id="password"
@@ -105,7 +107,7 @@ export const RegisterPage = () => {
                   required
                   minLength={6}
                   className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="Min. 6 characters"
+                  placeholder={t('auth.minCharacters')}
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 />
@@ -113,7 +115,7 @@ export const RegisterPage = () => {
 
               <div>
                 <label htmlFor="birthDate" className="block text-sm font-medium text-neutral-300 mb-2">
-                  Date of Birth
+                  {t('auth.dateOfBirth')}
                 </label>
                 <input
                   id="birthDate"
@@ -124,7 +126,7 @@ export const RegisterPage = () => {
                   value={formData.birthDate}
                   onChange={(e) => setFormData({ ...formData, birthDate: e.target.value })}
                 />
-                <p className="mt-1 text-xs text-neutral-500">You must be 18 or older to register</p>
+                <p className="mt-1 text-xs text-neutral-500">{t('auth.ageRequirement')}</p>
               </div>
             </div>
 
@@ -133,7 +135,7 @@ export const RegisterPage = () => {
               disabled={isLoading}
               className="w-full py-3 px-4 text-sm font-semibold rounded-lg text-neutral-950 bg-primary-500 hover:bg-primary-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {isLoading ? 'Creating account...' : 'Sign up'}
+              {isLoading ? t('auth.creatingAccount') : t('auth.signUp')}
             </button>
           </form>
         </div>

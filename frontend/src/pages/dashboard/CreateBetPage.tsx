@@ -1,21 +1,13 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { tipsterApi } from '../../api/tipster.api';
 import { tipApi } from '../../api/tip.api';
 import { CreateTipDto, Sport, TipVisibility } from '../../types/tip.types';
 import { Tipster } from '../../types/tipster.types';
 
-const PLATFORMS = [
-  'Betclic',
-  'Winamax',
-  'Unibet',
-  'ParionsSport',
-  'PMU',
-  'Bet365',
-  'Other',
-];
-
 export const CreateBetPage = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [tipsterProfile, setTipsterProfile] = useState<Tipster | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -56,7 +48,7 @@ export const CreateBetPage = () => {
       await tipApi.createTip(formData);
       navigate('/dashboard/bets');
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to create bet');
+      setError(err.response?.data?.error || t('createBet.failedToCreate'));
     } finally {
       setIsSubmitting(false);
     }
@@ -65,7 +57,7 @@ export const CreateBetPage = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-neutral-400">Loading...</div>
+        <div className="text-neutral-400">{t('common.loading')}</div>
       </div>
     );
   }
@@ -79,15 +71,15 @@ export const CreateBetPage = () => {
               d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
         </div>
-        <h3 className="text-white font-semibold mb-2">Tipster Profile Required</h3>
+        <h3 className="text-white font-semibold mb-2">{t('createBet.tipsterRequired')}</h3>
         <p className="text-neutral-500 mb-6">
-          You need to create a tipster profile before publishing bets.
+          {t('createBet.needTipsterProfile')}
         </p>
         <button
           onClick={() => navigate('/dashboard')}
           className="px-4 py-2 bg-primary-500 text-neutral-950 rounded-lg font-medium hover:bg-primary-400 transition-colors"
         >
-          Go to Dashboard
+          {t('createBet.goToDashboard')}
         </button>
       </div>
     );
@@ -96,9 +88,9 @@ export const CreateBetPage = () => {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white">Create New Bet</h1>
+        <h1 className="text-2xl font-bold text-white">{t('createBet.createNewBet')}</h1>
         <p className="text-neutral-400 mt-1">
-          Share a new betting prediction with your followers
+          {t('createBet.sharePrediction')}
         </p>
       </div>
 
@@ -113,13 +105,13 @@ export const CreateBetPage = () => {
           {/* Event */}
           <div>
             <label htmlFor="event" className="block text-sm font-medium text-neutral-300 mb-2">
-              Event *
+              {t('createBet.event')} *
             </label>
             <input
               type="text"
               id="event"
               required
-              placeholder="e.g., Lakers vs Warriors - NBA"
+              placeholder={t('createBet.eventPlaceholder')}
               value={formData.event}
               onChange={(e) => setFormData({ ...formData, event: e.target.value })}
               className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
@@ -129,13 +121,13 @@ export const CreateBetPage = () => {
           {/* Prediction */}
           <div>
             <label htmlFor="prediction" className="block text-sm font-medium text-neutral-300 mb-2">
-              Prediction *
+              {t('createBet.prediction')} *
             </label>
             <input
               type="text"
               id="prediction"
               required
-              placeholder="e.g., Lakers to win"
+              placeholder={t('createBet.predictionPlaceholder')}
               value={formData.prediction}
               onChange={(e) => setFormData({ ...formData, prediction: e.target.value })}
               className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
@@ -146,7 +138,7 @@ export const CreateBetPage = () => {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label htmlFor="odds" className="block text-sm font-medium text-neutral-300 mb-2">
-                Odds *
+                {t('createBet.odds')} *
               </label>
               <input
                 type="number"
@@ -154,7 +146,7 @@ export const CreateBetPage = () => {
                 min="1.01"
                 id="odds"
                 required
-                placeholder="e.g., 2.15"
+                placeholder={t('createBet.oddsPlaceholder')}
                 value={formData.odds || ''}
                 onChange={(e) => setFormData({ ...formData, odds: parseFloat(e.target.value) || 0 })}
                 className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
@@ -162,7 +154,7 @@ export const CreateBetPage = () => {
             </div>
             <div>
               <label htmlFor="stake" className="block text-sm font-medium text-neutral-300 mb-2">
-                Stake (units) *
+                {t('createBet.stake')} *
               </label>
               <input
                 type="number"
@@ -170,7 +162,7 @@ export const CreateBetPage = () => {
                 min="0.1"
                 id="stake"
                 required
-                placeholder="e.g., 1"
+                placeholder={t('createBet.stakePlaceholder')}
                 value={formData.stake || 1}
                 onChange={(e) => setFormData({ ...formData, stake: parseFloat(e.target.value) || 1 })}
                 className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
@@ -182,7 +174,7 @@ export const CreateBetPage = () => {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label htmlFor="sport" className="block text-sm font-medium text-neutral-300 mb-2">
-                Sport
+                {t('createBet.sport')}
               </label>
               <select
                 id="sport"
@@ -190,24 +182,24 @@ export const CreateBetPage = () => {
                 onChange={(e) => setFormData({ ...formData, sport: e.target.value ? (e.target.value as Sport) : undefined })}
                 className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               >
-                <option value="">Select a sport</option>
-                <option value={Sport.FOOTBALL}>Football</option>
-                <option value={Sport.BASKETBALL}>Basketball</option>
-                <option value={Sport.TENNIS}>Tennis</option>
-                <option value={Sport.RUGBY}>Rugby</option>
-                <option value={Sport.MMA}>MMA</option>
-                <option value={Sport.BOXING}>Boxing</option>
-                <option value={Sport.ESPORTS}>Esports</option>
-                <option value={Sport.HOCKEY}>Hockey</option>
-                <option value={Sport.VOLLEYBALL}>Volleyball</option>
-                <option value={Sport.BASEBALL}>Baseball</option>
-                <option value={Sport.AMERICAN_FOOTBALL}>American Football</option>
-                <option value={Sport.OTHER}>Other</option>
+                <option value="">{t('createBet.selectSport')}</option>
+                <option value={Sport.FOOTBALL}>{t('sports.football')}</option>
+                <option value={Sport.BASKETBALL}>{t('sports.basketball')}</option>
+                <option value={Sport.TENNIS}>{t('sports.tennis')}</option>
+                <option value={Sport.RUGBY}>{t('sports.rugby')}</option>
+                <option value={Sport.MMA}>{t('sports.mma')}</option>
+                <option value={Sport.BOXING}>{t('sports.boxing')}</option>
+                <option value={Sport.ESPORTS}>{t('sports.esports')}</option>
+                <option value={Sport.HOCKEY}>{t('sports.hockey')}</option>
+                <option value={Sport.VOLLEYBALL}>{t('sports.volleyball')}</option>
+                <option value={Sport.BASEBALL}>{t('sports.baseball')}</option>
+                <option value={Sport.AMERICAN_FOOTBALL}>{t('sports.americanFootball')}</option>
+                <option value={Sport.OTHER}>{t('sports.other')}</option>
               </select>
             </div>
             <div>
               <label htmlFor="platform" className="block text-sm font-medium text-neutral-300 mb-2">
-                Betting Platform
+                {t('createBet.platform')}
               </label>
               <select
                 id="platform"
@@ -215,12 +207,14 @@ export const CreateBetPage = () => {
                 onChange={(e) => setFormData({ ...formData, platform: e.target.value || undefined })}
                 className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               >
-                <option value="">Select a platform</option>
-                {PLATFORMS.map((platform) => (
-                  <option key={platform} value={platform}>
-                    {platform}
-                  </option>
-                ))}
+                <option value="">{t('createBet.selectPlatform')}</option>
+                <option value="Betclic">{t('platforms.betclic')}</option>
+                <option value="Winamax">{t('platforms.winamax')}</option>
+                <option value="Unibet">{t('platforms.unibet')}</option>
+                <option value="ParionsSport">{t('platforms.parionsSport')}</option>
+                <option value="PMU">{t('platforms.pmu')}</option>
+                <option value="Bet365">{t('platforms.bet365')}</option>
+                <option value="Other">{t('platforms.other')}</option>
               </select>
             </div>
           </div>
@@ -228,25 +222,25 @@ export const CreateBetPage = () => {
           {/* Bet Link */}
           <div>
             <label htmlFor="betLink" className="block text-sm font-medium text-neutral-300 mb-2">
-              Bet Link (Optional)
+              {t('createBet.betLink')}
             </label>
             <input
               type="url"
               id="betLink"
-              placeholder="https://example.com/bet/..."
+              placeholder={t('createBet.betLinkPlaceholder')}
               value={formData.betLink || ''}
               onChange={(e) => setFormData({ ...formData, betLink: e.target.value || undefined })}
               className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
             <p className="mt-1 text-xs text-neutral-500">
-              Direct link for subscribers to quickly place this bet
+              {t('createBet.betLinkHelper')}
             </p>
           </div>
 
           {/* Visibility */}
           <div>
             <label className="block text-sm font-medium text-neutral-300 mb-3">
-              Visibility
+              {t('createBet.visibility')}
             </label>
             <div className="flex gap-4">
               <label className={`flex-1 p-4 rounded-lg border cursor-pointer transition-all ${
@@ -269,8 +263,8 @@ export const CreateBetPage = () => {
                       : 'border-neutral-500'
                   }`} />
                   <div>
-                    <p className="font-medium text-white">Free</p>
-                    <p className="text-xs text-neutral-500">Visible to everyone</p>
+                    <p className="font-medium text-white">{t('createBet.free')}</p>
+                    <p className="text-xs text-neutral-500">{t('createBet.freeHelper')}</p>
                   </div>
                 </div>
               </label>
@@ -295,8 +289,8 @@ export const CreateBetPage = () => {
                       : 'border-neutral-500'
                   }`} />
                   <div>
-                    <p className="font-medium text-white">Premium</p>
-                    <p className="text-xs text-neutral-500">Subscribers only</p>
+                    <p className="font-medium text-white">{t('createBet.premium')}</p>
+                    <p className="text-xs text-neutral-500">{t('createBet.premiumHelper')}</p>
                   </div>
                 </div>
               </label>
@@ -306,12 +300,12 @@ export const CreateBetPage = () => {
           {/* Explanation */}
           <div>
             <label htmlFor="explanation" className="block text-sm font-medium text-neutral-300 mb-2">
-              Explanation (Optional)
+              {t('createBet.explanation')}
             </label>
             <textarea
               id="explanation"
               rows={4}
-              placeholder="Why do you recommend this bet?"
+              placeholder={t('createBet.explanationPlaceholder')}
               value={formData.explanation}
               onChange={(e) => setFormData({ ...formData, explanation: e.target.value })}
               className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
@@ -321,13 +315,13 @@ export const CreateBetPage = () => {
           {/* Preview */}
           {formData.event && formData.odds > 0 && (
             <div className="p-4 bg-neutral-800/50 rounded-lg border border-neutral-700">
-              <p className="text-sm text-neutral-500 mb-2">Preview</p>
+              <p className="text-sm text-neutral-500 mb-2">{t('createBet.preview')}</p>
               <p className="text-white font-medium">{formData.event}</p>
               <p className="text-primary-400">{formData.prediction}</p>
               <div className="flex gap-4 mt-2 text-sm">
-                <span className="text-neutral-400">Odds: <span className="text-white">{formData.odds}</span></span>
-                <span className="text-neutral-400">Stake: <span className="text-white">{formData.stake}u</span></span>
-                <span className="text-neutral-400">Potential: <span className="text-primary-500">+{((formData.odds - 1) * (formData.stake || 1)).toFixed(2)}u</span></span>
+                <span className="text-neutral-400">{t('createBet.oddsLabel')} <span className="text-white">{formData.odds}</span></span>
+                <span className="text-neutral-400">{t('createBet.stakeLabel')} <span className="text-white">{formData.stake}u</span></span>
+                <span className="text-neutral-400">{t('createBet.potentialLabel')} <span className="text-primary-500">+{((formData.odds - 1) * (formData.stake || 1)).toFixed(2)}u</span></span>
               </div>
             </div>
           )}
@@ -339,14 +333,14 @@ export const CreateBetPage = () => {
               disabled={isSubmitting}
               className="flex-1 py-3 bg-primary-500 text-neutral-950 rounded-lg font-semibold hover:bg-primary-400 transition-colors disabled:opacity-50"
             >
-              {isSubmitting ? 'Publishing...' : 'Publish Bet'}
+              {isSubmitting ? t('createBet.publishing') : t('createBet.publishBet')}
             </button>
             <button
               type="button"
               onClick={() => navigate('/dashboard/bets')}
               className="px-6 py-3 bg-neutral-800 text-white rounded-lg font-medium hover:bg-neutral-700 transition-colors"
             >
-              Cancel
+              {t('common.cancel')}
             </button>
           </div>
         </form>

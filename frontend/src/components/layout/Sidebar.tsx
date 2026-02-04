@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 
 interface SidebarProps {
@@ -47,43 +48,44 @@ const Icons = {
   ),
 };
 
-// Navigation items configuration
-const navItems = [
-  {
-    path: '/dashboard',
-    label: 'Statistics',
-    icon: Icons.Dashboard,
-    end: true // Only match exact path
-  },
-  {
-    path: '/dashboard/bets',
-    label: 'My Bets',
-    icon: Icons.Bets
-  },
-  {
-    path: '/dashboard/premium',
-    label: 'Premium',
-    icon: Icons.Premium
-  },
-  {
-    path: '/dashboard/create',
-    label: 'Create a Bet',
-    icon: Icons.Create
-  },
-  {
-    path: '/dashboard/settings',
-    label: 'Settings',
-    icon: Icons.Settings
-  },
-];
-
 export const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
+  const { t } = useTranslation();
   const { user } = useAuth();
 
   const handleNavClick = () => {
     // Close sidebar on mobile when a link is clicked
     onClose?.();
   };
+
+  // Navigation items configuration with translations
+  const navItems = [
+    {
+      path: '/dashboard',
+      labelKey: 'sidebar.statistics',
+      icon: Icons.Dashboard,
+      end: true // Only match exact path
+    },
+    {
+      path: '/dashboard/bets',
+      labelKey: 'sidebar.myBets',
+      icon: Icons.Bets
+    },
+    {
+      path: '/dashboard/premium',
+      labelKey: 'sidebar.premium',
+      icon: Icons.Premium
+    },
+    {
+      path: '/dashboard/create',
+      labelKey: 'sidebar.createBet',
+      icon: Icons.Create
+    },
+    {
+      path: '/dashboard/settings',
+      labelKey: 'sidebar.settings',
+      icon: Icons.Settings
+    },
+  ];
 
   return (
     <aside className={`
@@ -94,7 +96,7 @@ export const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
     `}>
       {/* Mobile close button */}
       <div className="lg:hidden flex items-center justify-between p-4 border-b border-neutral-800">
-        <span className="text-white font-semibold">Dashboard Menu</span>
+        <span className="text-white font-semibold">{t('sidebar.dashboardMenu')}</span>
         <button
           onClick={onClose}
           className="p-2 text-neutral-400 hover:text-white rounded-lg hover:bg-neutral-800"
@@ -108,7 +110,7 @@ export const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
       {/* Navigation Menu */}
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
         <p className="text-neutral-500 text-xs font-semibold uppercase tracking-wider px-3 mb-3">
-          Main Menu
+          {t('sidebar.mainMenu')}
         </p>
 
         {navItems.map((item) => (
@@ -126,7 +128,7 @@ export const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
             }
           >
             <item.icon />
-            <span className="font-medium">{item.label}</span>
+            <span className="font-medium">{t(item.labelKey)}</span>
           </NavLink>
         ))}
 
@@ -134,7 +136,7 @@ export const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
         <div className="my-4 border-t border-neutral-800" />
 
         <p className="text-neutral-500 text-xs font-semibold uppercase tracking-wider px-3 mb-3">
-          Quick Links
+          {t('sidebar.quickLinks')}
         </p>
 
         {/* Back to public site */}
@@ -144,7 +146,7 @@ export const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-neutral-400 hover:bg-neutral-800 hover:text-white transition-all duration-200"
         >
           <Icons.Home />
-          <span className="font-medium">Back to Feed</span>
+          <span className="font-medium">{t('sidebar.backToFeed')}</span>
         </NavLink>
       </nav>
 
@@ -158,7 +160,7 @@ export const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-white font-medium text-sm truncate">
-              {user?.username || 'User'}
+              {user?.username || t('sidebar.user')}
             </p>
             <p className="text-neutral-500 text-xs truncate">
               {user?.email || ''}
