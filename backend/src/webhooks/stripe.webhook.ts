@@ -130,6 +130,7 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
 
   console.log(`Processing subscription ${subscription.id}, status: ${subscription.status}`);
   console.log(`Metadata: userId=${userId}, offerId=${offerId}`);
+  console.log(`current_period_end: ${subscription.current_period_end}`);
 
   // Map Stripe status to our status
   const statusMap: Record<string, SubscriptionStatus> = {
@@ -141,7 +142,13 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
   };
 
   const status = statusMap[subscription.status] || SubscriptionStatus.ACTIVE;
-  const periodEnd = new Date((subscription as any).current_period_end * 1000);
+
+  // Handle period end - use current date + 30 days as fallback if missing
+  const periodEndTimestamp = subscription.current_period_end;
+  const periodEnd = periodEndTimestamp
+    ? new Date(periodEndTimestamp * 1000)
+    : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // Fallback: 30 days from now
+
   const trialEnd = subscription.trial_end
     ? new Date(subscription.trial_end * 1000)
     : null;
@@ -237,10 +244,15 @@ async function handleInvoicePaid(invoice: Stripe.Invoice) {
     // Get updated subscription details from Stripe
     const stripeSubscription = await stripe.subscriptions.retrieve(stripeSubId);
 
+    const periodEndTimestamp = stripeSubscription.current_period_end;
+    const periodEnd = periodEndTimestamp
+      ? new Date(periodEndTimestamp * 1000)
+      : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
     await subscriptionService.updateSubscription(
       stripeSubId,
       SubscriptionStatus.ACTIVE,
-      new Date((stripeSubscription as any).current_period_end * 1000),
+      periodEnd,
       stripeSubscription.cancel_at_period_end
     );
     console.log(`Invoice paid - updated subscription ${stripeSubId}`);
