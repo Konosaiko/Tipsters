@@ -2,6 +2,13 @@ import { db } from '../lib/db';
 import { TipsterStats, PeriodFilter, TopPerformer } from '../types/stats.types';
 import { TipResult } from '../types/tip.types';
 
+// Type for tip data used in stats calculations
+interface TipData {
+  result: string | null;
+  odds: number;
+  stake: number;
+}
+
 /**
  * Stats Service
  *
@@ -35,11 +42,11 @@ export class StatsService {
 
     // Calculate counts
     const totalTips = tips.length;
-    const settledTips = tips.filter((t) => t.result !== null).length;
-    const pendingTips = tips.filter((t) => t.result === null).length;
-    const wonTips = tips.filter((t) => t.result === TipResult.WON).length;
-    const lostTips = tips.filter((t) => t.result === TipResult.LOST).length;
-    const voidTips = tips.filter((t) => t.result === TipResult.VOID).length;
+    const settledTips = tips.filter((t: TipData) => t.result !== null).length;
+    const pendingTips = tips.filter((t: TipData) => t.result === null).length;
+    const wonTips = tips.filter((t: TipData) => t.result === TipResult.WON).length;
+    const lostTips = tips.filter((t: TipData) => t.result === TipResult.LOST).length;
+    const voidTips = tips.filter((t: TipData) => t.result === TipResult.VOID).length;
 
     // Calculate performance metrics
     const winRate = this.calculateWinRate(wonTips, settledTips - voidTips); // Exclude void from win rate
@@ -98,11 +105,11 @@ export class StatsService {
 
     // Calculate stats for each tipster
     const tipstersWithStats = tipsters
-      .map((tipster) => {
+      .map((tipster: { id: string; displayName: string; user: { username: string }; tips: TipData[] }) => {
         const tips = tipster.tips;
-        const settledTips = tips.filter((t) => t.result !== null).length;
-        const wonTips = tips.filter((t) => t.result === TipResult.WON).length;
-        const voidTips = tips.filter((t) => t.result === TipResult.VOID).length;
+        const settledTips = tips.filter((t: TipData) => t.result !== null).length;
+        const wonTips = tips.filter((t: TipData) => t.result === TipResult.WON).length;
+        const voidTips = tips.filter((t: TipData) => t.result === TipResult.VOID).length;
 
         // Only include tipsters with at least 5 settled tips
         if (settledTips < 5) {
@@ -122,11 +129,11 @@ export class StatsService {
           settledTips,
         };
       })
-      .filter((t): t is TopPerformer => t !== null);
+      .filter((t: TopPerformer | null): t is TopPerformer => t !== null);
 
     // Sort by ROI descending and return top N
     return tipstersWithStats
-      .sort((a, b) => b.roi - a.roi)
+      .sort((a: TopPerformer, b: TopPerformer) => b.roi - a.roi)
       .slice(0, limit);
   }
 

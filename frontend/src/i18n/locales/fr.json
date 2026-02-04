@@ -134,7 +134,8 @@
     "noTipsYet": "Ce tipster n'a pas encore publié de pronostics",
     "invalidTipsterId": "ID tipster invalide",
     "failedToLoad": "Échec du chargement du tipster",
-    "loadingTipster": "Chargement du tipster..."
+    "loadingTipster": "Chargement du tipster...",
+    "manageSubscription": "Gérer l'abonnement"
   },
 
   "dashboard": {

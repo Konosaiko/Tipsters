@@ -399,7 +399,7 @@ export class SubscriptionService {
 
       if (!offerId) continue;
 
-      const matchingOffer = offers.find((o) => o.id === offerId);
+      const matchingOffer = offers.find((o: { id: string }) => o.id === offerId);
       if (!matchingOffer) continue;
 
       // Check if we already have this subscription locally
@@ -409,13 +409,15 @@ export class SubscriptionService {
 
       if (!existing && stripeSub.status === 'active') {
         // Create the subscription locally
+        const periodEnd = (stripeSub as any).current_period_end as number;
+        const trialEnd = (stripeSub as any).trial_end as number | null;
         await this.createSubscription(
           userId,
           offerId,
           stripeSub.id,
           SubscriptionStatus.ACTIVE,
-          new Date(stripeSub.current_period_end * 1000),
-          stripeSub.trial_end ? new Date(stripeSub.trial_end * 1000) : null
+          new Date(periodEnd * 1000),
+          trialEnd ? new Date(trialEnd * 1000) : null
         );
         console.log(`Synced subscription ${stripeSub.id} from Stripe`);
         return true;
