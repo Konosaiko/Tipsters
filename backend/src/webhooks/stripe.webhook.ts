@@ -128,6 +128,9 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
 async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
   const { userId, offerId } = subscription.metadata || {};
 
+  console.log(`Processing subscription ${subscription.id}, status: ${subscription.status}`);
+  console.log(`Metadata: userId=${userId}, offerId=${offerId}`);
+
   // Map Stripe status to our status
   const statusMap: Record<string, SubscriptionStatus> = {
     active: SubscriptionStatus.ACTIVE,
@@ -143,12 +146,12 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
     ? new Date(subscription.trial_end * 1000)
     : null;
 
-  // Check if subscription exists
-  const existing = await db.subscription.findUnique({
+  // Check if subscription exists by Stripe ID
+  const existingByStripeId = await db.subscription.findUnique({
     where: { stripeSubscriptionId: subscription.id },
   });
 
-  if (existing) {
+  if (existingByStripeId) {
     // Update existing subscription
     await subscriptionService.updateSubscription(
       subscription.id,
@@ -157,20 +160,44 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
       subscription.cancel_at_period_end
     );
     console.log(`Updated subscription ${subscription.id}`);
-  } else if (userId && offerId) {
-    // Create new subscription
-    await subscriptionService.createSubscription(
-      userId,
-      offerId,
-      subscription.id,
-      status,
-      periodEnd,
-      trialEnd
-    );
-    console.log(`Created subscription ${subscription.id} for user ${userId}`);
-  } else {
-    console.error('Cannot create subscription - missing userId or offerId in metadata');
+    return;
   }
+
+  if (!userId || !offerId) {
+    console.error('Cannot create subscription - missing userId or offerId in metadata');
+    return;
+  }
+
+  // Check if user already has a subscription to this offer (from previous attempts)
+  const existingByUserOffer = await db.subscription.findUnique({
+    where: { userId_offerId: { userId, offerId } },
+  });
+
+  if (existingByUserOffer) {
+    // Update the existing subscription with the new Stripe ID
+    await db.subscription.update({
+      where: { id: existingByUserOffer.id },
+      data: {
+        stripeSubscriptionId: subscription.id,
+        status,
+        currentPeriodEnd: periodEnd,
+        trialEndsAt: trialEnd,
+      },
+    });
+    console.log(`Linked existing subscription to Stripe ID ${subscription.id}`);
+    return;
+  }
+
+  // Create new subscription
+  await subscriptionService.createSubscription(
+    userId,
+    offerId,
+    subscription.id,
+    status,
+    periodEnd,
+    trialEnd
+  );
+  console.log(`Created subscription ${subscription.id} for user ${userId}`);
 }
 
 /**
