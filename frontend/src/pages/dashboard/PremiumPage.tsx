@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { tipsterApi } from '../../api/tipster.api';
 import { Tipster } from '../../types/tipster.types';
 import {
@@ -27,6 +28,7 @@ import {
 import { DashboardCreateOfferForm } from '../../components/dashboard/DashboardCreateOfferForm';
 
 export const PremiumPage = () => {
+  const { t } = useTranslation();
   const [tipsterProfile, setTipsterProfile] = useState<Tipster | null>(null);
   const [stripeStatus, setStripeStatus] = useState<StripeAccountStatus | null>(null);
   const [offers, setOffers] = useState<SubscriptionOffer[]>([]);
@@ -115,7 +117,7 @@ export const PremiumPage = () => {
   }
 
   async function handleDeleteOffer(offerId: string) {
-    if (!confirm('Are you sure you want to delete this offer?')) return;
+    if (!confirm(t('premium.confirmDeleteOffer'))) return;
     try {
       await deleteOffer(offerId);
       loadData();
@@ -126,8 +128,8 @@ export const PremiumPage = () => {
 
   async function handleCancelSubscription(sub: Subscription) {
     const confirmMsg = sub.cancelAtPeriodEnd
-      ? 'Cancel immediately?'
-      : 'Cancel at period end?';
+      ? t('premium.cancelImmediately')
+      : t('premium.cancelAtPeriodEnd');
     if (!confirm(confirmMsg)) return;
 
     try {
@@ -144,7 +146,7 @@ export const PremiumPage = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-neutral-400">Loading...</div>
+        <div className="text-neutral-400">{t('common.loading')}</div>
       </div>
     );
   }
@@ -153,9 +155,9 @@ export const PremiumPage = () => {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">Premium & Subscriptions</h1>
+        <h1 className="text-2xl font-bold text-white">{t('premium.title')}</h1>
         <p className="text-neutral-400 mt-1">
-          Manage your payment setup, subscription offers, and active subscriptions
+          {t('premium.managePayments')}
         </p>
       </div>
 
@@ -163,7 +165,7 @@ export const PremiumPage = () => {
         <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 flex items-center justify-between">
           <p className="text-red-400">{error}</p>
           <button onClick={() => setError(null)} className="text-red-400 hover:text-red-300">
-            Dismiss
+            {t('common.dismiss')}
           </button>
         </div>
       )}
@@ -173,19 +175,19 @@ export const PremiumPage = () => {
         <>
           {/* Stripe Setup */}
           <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-6">
-            <h2 className="text-lg font-semibold text-white mb-4">Payment Setup</h2>
+            <h2 className="text-lg font-semibold text-white mb-4">{t('premium.paymentSetup')}</h2>
 
             {!stripeStatus?.hasAccount && (
               <div>
                 <p className="text-neutral-400 mb-4">
-                  Connect your Stripe account to receive payments from subscribers.
+                  {t('premium.connectStripeDesc')}
                 </p>
                 <button
                   onClick={handleStartOnboarding}
                   disabled={actionLoading}
                   className="px-4 py-2 bg-primary-500 text-neutral-950 rounded-lg font-medium hover:bg-primary-400 transition-colors disabled:opacity-50"
                 >
-                  {actionLoading ? 'Loading...' : 'Connect with Stripe'}
+                  {actionLoading ? t('common.loading') : t('premium.connectStripe')}
                 </button>
               </div>
             )}
@@ -194,10 +196,10 @@ export const PremiumPage = () => {
               <div>
                 <div className="flex items-center gap-2 mb-4">
                   <span className="w-3 h-3 bg-yellow-500 rounded-full animate-pulse" />
-                  <span className="text-yellow-500 font-medium">Onboarding incomplete</span>
+                  <span className="text-yellow-500 font-medium">{t('premium.onboardingIncomplete')}</span>
                 </div>
                 <p className="text-neutral-400 mb-4">
-                  Please complete your Stripe account setup to start receiving payments.
+                  {t('premium.completeStripeSetup')}
                 </p>
                 <div className="flex gap-3">
                   <button
@@ -205,14 +207,14 @@ export const PremiumPage = () => {
                     disabled={actionLoading}
                     className="px-4 py-2 bg-primary-500 text-neutral-950 rounded-lg font-medium hover:bg-primary-400 transition-colors disabled:opacity-50"
                   >
-                    {actionLoading ? 'Loading...' : 'Continue Setup'}
+                    {actionLoading ? t('common.loading') : t('premium.continueSetup')}
                   </button>
                   <button
                     onClick={handleRefreshStatus}
                     disabled={actionLoading}
                     className="px-4 py-2 bg-neutral-800 text-white rounded-lg font-medium hover:bg-neutral-700 transition-colors disabled:opacity-50"
                   >
-                    Refresh Status
+                    {t('premium.refreshStatus')}
                   </button>
                 </div>
               </div>
@@ -222,20 +224,20 @@ export const PremiumPage = () => {
               <div>
                 <div className="flex items-center gap-2 mb-4">
                   <span className="w-3 h-3 bg-primary-500 rounded-full" />
-                  <span className="text-primary-500 font-medium">Account connected</span>
+                  <span className="text-primary-500 font-medium">{t('premium.accountConnected')}</span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4 p-4 bg-neutral-800/50 rounded-lg">
                   <div className="flex items-center justify-between">
-                    <span className="text-neutral-400">Charges</span>
+                    <span className="text-neutral-400">{t('premium.charges')}</span>
                     <span className={stripeStatus.chargesEnabled ? 'text-primary-500' : 'text-red-500'}>
-                      {stripeStatus.chargesEnabled ? 'Enabled' : 'Disabled'}
+                      {stripeStatus.chargesEnabled ? t('premium.enabled') : t('premium.disabled')}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-neutral-400">Payouts</span>
+                    <span className="text-neutral-400">{t('premium.payouts')}</span>
                     <span className={stripeStatus.payoutsEnabled ? 'text-primary-500' : 'text-red-500'}>
-                      {stripeStatus.payoutsEnabled ? 'Enabled' : 'Disabled'}
+                      {stripeStatus.payoutsEnabled ? t('premium.enabled') : t('premium.disabled')}
                     </span>
                   </div>
                 </div>
@@ -245,7 +247,7 @@ export const PremiumPage = () => {
                   disabled={actionLoading}
                   className="px-4 py-2 bg-neutral-800 text-white rounded-lg font-medium hover:bg-neutral-700 transition-colors disabled:opacity-50"
                 >
-                  {actionLoading ? 'Loading...' : 'Open Stripe Dashboard'}
+                  {actionLoading ? t('common.loading') : t('premium.openStripeDashboard')}
                 </button>
               </div>
             )}
@@ -254,13 +256,13 @@ export const PremiumPage = () => {
           {/* Subscription Offers */}
           <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-semibold text-white">Your Subscription Offers</h2>
+              <h2 className="text-lg font-semibold text-white">{t('premium.yourOffers')}</h2>
               {!showCreateForm && (
                 <button
                   onClick={() => setShowCreateForm(true)}
                   className="px-4 py-2 bg-primary-500 text-neutral-950 rounded-lg font-medium hover:bg-primary-400 transition-colors"
                 >
-                  + New Offer
+                  {t('premium.newOffer')}
                 </button>
               )}
             </div>
@@ -279,7 +281,7 @@ export const PremiumPage = () => {
 
             {offers.length === 0 && !showCreateForm ? (
               <p className="text-neutral-500 text-center py-8">
-                No subscription offers yet. Create your first offer to start earning!
+                {t('premium.noOffersYet')}
               </p>
             ) : (
               <div className="space-y-4">
@@ -298,7 +300,7 @@ export const PremiumPage = () => {
                           <h4 className="font-medium text-white">{offer.name}</h4>
                           {!offer.isActive && (
                             <span className="px-2 py-0.5 bg-neutral-700 text-neutral-400 text-xs rounded">
-                              Inactive
+                              {t('premium.inactive')}
                             </span>
                           )}
                         </div>
@@ -311,11 +313,11 @@ export const PremiumPage = () => {
                             {getDurationText(offer.duration)}
                           </span>
                           <span>
-                            {offer.sports.length === 0 ? 'All sports' : offer.sports.join(', ')}
+                            {offer.sports.length === 0 ? t('createOffer.allSports') : offer.sports.join(', ')}
                           </span>
-                          {offer.trialDays && <span>{offer.trialDays}d trial</span>}
+                          {offer.trialDays && <span>{offer.trialDays} {t('tipsterDetail.daysFreeTrial')}</span>}
                           <span className="text-primary-500">
-                            {offer._count?.subscriptions || 0} subscribers
+                            {offer._count?.subscriptions || 0} {t('common.follower_plural')}
                           </span>
                         </div>
                       </div>
@@ -329,13 +331,13 @@ export const PremiumPage = () => {
                               : 'bg-primary-500/10 text-primary-500 hover:bg-primary-500/20'
                           }`}
                         >
-                          {offer.isActive ? 'Deactivate' : 'Activate'}
+                          {offer.isActive ? t('premium.deactivate') : t('premium.activate')}
                         </button>
                         <button
                           onClick={() => handleDeleteOffer(offer.id)}
                           className="px-3 py-1.5 bg-red-500/10 text-red-500 rounded-lg text-sm font-medium hover:bg-red-500/20 transition-colors"
                         >
-                          Delete
+                          {t('common.delete')}
                         </button>
                       </div>
                     </div>
@@ -349,16 +351,16 @@ export const PremiumPage = () => {
 
       {/* User's Subscriptions */}
       <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-6">
-        <h2 className="text-lg font-semibold text-white mb-6">My Subscriptions</h2>
+        <h2 className="text-lg font-semibold text-white mb-6">{t('premium.mySubscriptions')}</h2>
 
         {subscriptions.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-neutral-500 mb-4">No active subscriptions</p>
+            <p className="text-neutral-500 mb-4">{t('premium.noActiveSubscriptions')}</p>
             <Link
               to="/tipsters"
               className="text-primary-500 hover:text-primary-400 font-medium"
             >
-              Browse tipsters →
+              {t('premium.browseTipsters')}
             </Link>
           </div>
         ) : (
@@ -393,13 +395,13 @@ export const PremiumPage = () => {
                   <div className="text-right">
                     {sub.currentPeriodEnd && (
                       <p className="text-sm text-neutral-500">
-                        {sub.cancelAtPeriodEnd ? 'Ends' : 'Renews'}:{' '}
+                        {sub.cancelAtPeriodEnd ? t('premium.endsOn') : t('premium.renewsOn')}{' '}
                         {new Date(sub.currentPeriodEnd).toLocaleDateString()}
                       </p>
                     )}
                     {sub.trialEndsAt && sub.status === 'TRIALING' && (
                       <p className="text-sm text-blue-400">
-                        Trial ends: {new Date(sub.trialEndsAt).toLocaleDateString()}
+                        {t('premium.trialEnds')} {new Date(sub.trialEndsAt).toLocaleDateString()}
                       </p>
                     )}
                   </div>
@@ -409,10 +411,10 @@ export const PremiumPage = () => {
                   <div className="mt-4 pt-4 border-t border-neutral-700">
                     {sub.cancelAtPeriodEnd ? (
                       <p className="text-sm text-yellow-500">
-                        Subscription will end on{' '}
+                        {t('premium.subscriptionWillEnd')}{' '}
                         {sub.currentPeriodEnd
                           ? new Date(sub.currentPeriodEnd).toLocaleDateString()
-                          : 'period end'}
+                          : t('premium.periodEnd')}
                       </p>
                     ) : (
                       <button
@@ -420,7 +422,7 @@ export const PremiumPage = () => {
                         disabled={cancellingId === sub.id}
                         className="text-sm text-red-500 hover:text-red-400 disabled:opacity-50"
                       >
-                        {cancellingId === sub.id ? 'Cancelling...' : 'Cancel subscription'}
+                        {cancellingId === sub.id ? t('premium.cancelling') : t('premium.cancelSubscription')}
                       </button>
                     )}
                   </div>

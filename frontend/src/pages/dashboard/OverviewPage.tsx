@@ -4,6 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import { tipsterApi } from '../../api/tipster.api';
 import { statsApi } from '../../api/stats.api';
+import {
+  getMySubscriptions,
+  Subscription,
+  getStatusColor,
+  formatStatus,
+} from '../../api/subscription.api';
+import { formatPrice, getDurationText } from '../../api/offer.api';
 import { Tipster } from '../../types/tipster.types';
 import { TipsterStats, PeriodFilter } from '../../types/stats.types';
 import { DashboardStatCard } from '../../components/dashboard/DashboardStatCard';
@@ -15,6 +22,7 @@ export const OverviewPage = () => {
   const { user } = useAuth();
   const [tipsterProfile, setTipsterProfile] = useState<Tipster | null>(null);
   const [stats, setStats] = useState<TipsterStats | null>(null);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [period, setPeriod] = useState<PeriodFilter>('all');
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingStats, setIsLoadingStats] = useState(false);
@@ -33,6 +41,21 @@ export const OverviewPage = () => {
     };
 
     fetchTipsterProfile();
+  }, [refreshKey]);
+
+  // Fetch user subscriptions
+  useEffect(() => {
+    const fetchSubscriptions = async () => {
+      try {
+        const subs = await getMySubscriptions();
+        setSubscriptions(subs);
+      } catch (err) {
+        console.error('Failed to load subscriptions:', err);
+        setSubscriptions([]);
+      }
+    };
+
+    fetchSubscriptions();
   }, [refreshKey]);
 
   useEffect(() => {
@@ -289,6 +312,82 @@ export const OverviewPage = () => {
           >
             {t('overview.createFirstBet')}
           </Link>
+        </div>
+      )}
+
+      {/* My Subscriptions Section */}
+      {subscriptions.length > 0 && (
+        <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-white">{t('dashboard.mySubscriptions')}</h3>
+            <Link
+              to="/dashboard/premium"
+              className="text-primary-500 hover:text-primary-400 text-sm font-medium"
+            >
+              {t('overview.manageSubscriptions')} →
+            </Link>
+          </div>
+
+          <div className="space-y-3">
+            {subscriptions.slice(0, 3).map((sub) => (
+              <div
+                key={sub.id}
+                className="flex items-center justify-between p-4 bg-neutral-800/50 rounded-lg"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 bg-primary-500/10 rounded-full flex items-center justify-center">
+                    <span className="text-primary-500 font-bold text-sm">
+                      {sub.offer.tipster.displayName.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  <div>
+                    <Link
+                      to={`/tipsters/${sub.offer.tipster.id}`}
+                      className="font-medium text-white hover:text-primary-400"
+                    >
+                      {sub.offer.tipster.displayName}
+                    </Link>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-sm text-neutral-400">{sub.offer.name}</span>
+                      <span className={`px-2 py-0.5 rounded text-xs font-medium ${getStatusColor(sub.status)}`}>
+                        {formatStatus(sub.status)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <div className="text-right">
+                    <p className="text-sm text-white font-medium">
+                      {formatPrice(sub.offer.price, sub.offer.currency)}
+                      {getDurationText(sub.offer.duration)}
+                    </p>
+                    {sub.currentPeriodEnd && (
+                      <p className="text-xs text-neutral-500">
+                        {sub.cancelAtPeriodEnd ? t('premium.endsOn') : t('premium.renewsOn')}{' '}
+                        {new Date(sub.currentPeriodEnd).toLocaleDateString()}
+                      </p>
+                    )}
+                  </div>
+                  <Link
+                    to="/dashboard/premium"
+                    className="px-3 py-1.5 bg-neutral-700 text-white rounded-lg text-sm font-medium hover:bg-neutral-600 transition-colors"
+                  >
+                    {t('tipsterDetail.manageSubscription')}
+                  </Link>
+                </div>
+              </div>
+            ))}
+
+            {subscriptions.length > 3 && (
+              <Link
+                to="/dashboard/premium"
+                className="block text-center py-3 text-primary-500 hover:text-primary-400 text-sm font-medium"
+              >
+                {t('common.view')} {subscriptions.length - 3} {t('overview.moreSubscriptions')} →
+              </Link>
+            )}
+          </div>
         </div>
       )}
 

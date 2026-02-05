@@ -178,7 +178,8 @@
     "viewAllBets": "Voir Tous les Paris",
     "managePublishedTips": "Gérez vos pronostics publiés",
     "premiumSettings": "Paramètres Premium",
-    "manageSubscriptions": "Gérez les abonnements et offres"
+    "manageSubscriptions": "Gérez les abonnements et offres",
+    "moreSubscriptions": "abonnements supplémentaires"
   },
 
   "bets": {
